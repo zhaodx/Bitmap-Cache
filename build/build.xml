@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="build" default="compile" basedir=".">
+	<property file="building.properties" />
+	<property name="FLEX_HOME" value="${flex.home}" />
+	<taskdef resource="flexTasks.tasks" classpath="${flex.home}/ant/lib/flexTasks.jar" />
+
+	<target name="compile">
+		<mxmlc file="${app.home}/src/${app.main}" 
+			output="${app.output}/${app.swf}" 
+			keep-generated-actionscript="true"
+			actionscript-file-encoding="UTF-8" 
+			static-link-runtime-shared-libraries="true"
+			target-player="${app.swf-version}" 
+			debug="${app.debug}" 
+			verbose-stacktraces="${app.debug}"
+			maxmemory="1024m" 
+			fork="true"
+			optimize="true">
+
+			<jvmarg value="-Xmx1024m"/>
+			<jvmarg value="-Xms512m"/>
+			<jvmarg value="-XX:MaxPermSize=512m"/>
+
+			<load-config filename="${flex.home}/frameworks/flex-config.xml"/>
+			<source-path path-element="${flex.home}/frameworks"/>
+			<compiler.source-path path-element="${app.home}/src"/>
+
+			<compiler.library-path dir="${flex.home}/frameworks" append="true">
+				<include name="libs" />
+				<include name="en_US" />
+			</compiler.library-path>
+
+			<compiler.library-path dir="${app.home}" append="true">
+				<include name="libs" />
+			</compiler.library-path>
+		</mxmlc>
+	</target>
+</project>
