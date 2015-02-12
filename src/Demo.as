@@ -152,8 +152,8 @@ package
 					asset_list.push(mc);
 					_test_sp.addChild(mc);
 
-					mc.x = Math.random() * 2000;
-					mc.y = Math.random() * 2000;
+					mc.x = Math.random() * 1200;
+					mc.y = Math.random() * 800;
 					//mc.cow.visible = false;
 				}
 			}
