@@ -1,101 +1,64 @@
 package bmpcache
 {
-	import flash.display.BitmapData;
+	import flash.display.*;
 	import flash.geom.Rectangle;
 
 	public class Frame
 	{
 		public var 
-			id          : String,
-			ttl         : uint,
-			key         : String,
 			index       : int,
-			asset       : Asset,
-			expire      : uint,
 			bounds      : Rectangle,
-			memory      : uint,
-			source      : AssetSource,
-			timestamp   : uint,
-			bitmapData  : BitmapData,
-			captureTime : uint;
+			bitmapData  : BitmapData;
 
-		public function init(idx:int, ast:Asset, fTTL:uint):void
-		{
-			index = idx;
-			asset = ast;
-			source = asset.source;
-			id = ast.id + '_' + index;
-			ttl = fTTL;
-			bounds = source.bounds;
-		}
+		private var 
+			_bmps : Array; 
 
-		public function release():void
+		private function release():void
 		{
+			if (_bmps && _bmps.length)
+			{
+				for each(var bmp:Bitmap in _bmps)
+				{
+					bmp.bitmapData = AnimationManager.BLANK;
+				}
+			}
+
 			if (bitmapData)
 			{
 				bitmapData.dispose();
 				bitmapData = null;
-
-				memory = 0;
 			}
 		}
 
-		public function capture():void
+		public function addReference(bmp:Bitmap):void
 		{
-			if (!bitmapData)
+			if (!_bmps)
 			{
-				source.capture(this);
-				memory = bounds.width * bounds.height * 4;
-				Manager.cache.addFrame(this);
+				_bmps = [];
 			}
+
+			_bmps.push(bmp);
 		}
 
-		public function get nextFrame():Frame
+		public function removeReference(bmp:Bitmap):void
 		{
-			return asset.frames[(index + 1) % asset.frames.length];	
-		}
+			if (!_bmps)
+			{
+				return;
+			}
 
-		public function get prevFrame():Frame	
-		{
-			return asset.frames[(index + asset.frames.length - 1) % asset.frames.length];
-		}
-
-		public function get isFirstFrame():Boolean
-		{
-			return index == 0;
-		}
-
-		public function get isLastFrame():Boolean
-		{
-			return index == (asset.frames.length - 1);
-		}
-
-		public function get firstFrame():Frame
-		{
-			return asset.frames[0];
-		}
-
-		public function get lastFrame():Frame
-		{
-			return asset.frames[asset.frames.length - 1];
+			var index:int = _bmps.indexOf(bmp);
+			if (index != -1)
+			{
+				_bmps.splice(index, 1);
+			}
 		}
 
 		public function dispose():void
 		{
-			index = -1;
-
-			ttl = 0;
-			expire = 0;
-			timestamp = 0;
-			captureTime  = 0;
-
-			id = null;
-			key = null;
-			asset = null;
-			bounds = null;
-			source = null;
-
 			release();
+
+			_bmps = null;
 		}
 	}
 }

@@ -7,21 +7,19 @@ package
 	import flash.system.*;
 	import flash.display.*;
 
+	import bmpcache.*;
+
 	[SWF(width='1440', height='900')]
 
 	public class Demo extends Sprite
 	{
 		private var 
-			_tick        : uint,
 			_test_sp     : Sprite,
 			_mouse_pos   : Point,
 			_asset_bytes : ByteArray;
 
 		private static var 
 			_instance : Demo;  
-
-		public var 
-			asset_list : Vector.<MovieClip>;
 
 		public function Demo()
 		{
@@ -52,6 +50,8 @@ package
 			stage.align = StageAlign.TOP_LEFT;
 			stage.quality = StageQuality.HIGH;
 
+			AnimationManager.inst.init();
+
 			stage.addEventListener(Event.ENTER_FRAME, onUpdate, false, 0, true);
 			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp, false, 0, true);
 			stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown, false, 0, true);
@@ -63,12 +63,7 @@ package
 
 		private function onUpdate(event:Event):void
 		{
-			_tick++;
-
-			for each(var mc:MovieClip in asset_list)	
-			{
-				mc.cow.gotoAndStop(_tick % mc.cow.totalFrames);
-			}
+			AnimationManager.inst.render();			
 		}
 
 		private function onMouseDown(event:MouseEvent):void
@@ -108,7 +103,7 @@ package
 
 		private function loadAsset():void
 		{
-			var loader : URLLoader = new URLLoader();
+			var loader:URLLoader = new URLLoader();
 
 			loader.dataFormat = URLLoaderDataFormat.BINARY;
 			loader.addEventListener(Event.COMPLETE, onLoaded);
@@ -130,9 +125,7 @@ package
 
 		private function test():void
 		{
-			asset_list = new Vector.<MovieClip>();
-
-			for (var i:uint = 0; i < 100; ++i)
+			for (var i:uint = 0; i < 30; ++i)
 			{
 				showAsset();
 			}
@@ -142,19 +135,21 @@ package
 		{
 			if (_asset_bytes)
 			{
-				var loader : Loader = new Loader();
+				var loader:Loader = new Loader();
 				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onComp);
 				loader.loadBytes(_asset_bytes);
 
 				function onComp(evnet:Event):void
 				{
-					var mc : MovieClip = loader.content as MovieClip;
-					asset_list.push(mc);
-					_test_sp.addChild(mc);
+					var mc:MovieClip = loader.content as MovieClip;
 
-					mc.x = Math.random() * 1200;
-					mc.y = Math.random() * 800;
-					//mc.cow.visible = false;
+					mc.x = Math.random() * stage.stageWidth;
+					mc.y = Math.random() * stage.stageHeight;
+
+					var anim:Animation = new Animation(mc.cow, 'cow_black_anim', 100, 160);
+					anim.play();
+
+					_test_sp.addChild(mc);
 				}
 			}
 		}
