@@ -41,7 +41,7 @@ package bmpcache
 			_animationList.push(animation);
 		}
 
-		public function addFrame(animationId:String, frame:Frame):void
+		private function addFrame(animationId:String, frame:Frame):void
 		{
 			_frameList.push(frame);
 
@@ -52,7 +52,14 @@ package bmpcache
 		{
 			var frame:Frame = (_animations[animationId] as Vector.<Frame>)[frameIndex];
 
-			return frame ? frame : new Frame();
+			if (!frame)
+			{
+				frame = new Frame();
+				frame.index = frameIndex;
+				addFrame(animationId, frame);
+			}
+
+			return frame;
 		}
 
 		public function render():void

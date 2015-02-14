@@ -2,6 +2,7 @@ package bmpcache
 {
 	import flash.display.*;
 	import flash.geom.*;
+	import flash.system.*;
 
 	public class Animation
 	{
@@ -22,13 +23,18 @@ package bmpcache
 		public function Animation(sour:MovieClip, animationId:String, beginFrame:uint, endFrame:uint)	
 		{
 			id = animationId;
+
 			_source = sour;
+
 			_beginFrame = beginFrame;
 			_endFrame = endFrame;
 
 			_matrix = new Matrix();
 			_bmp = new Bitmap(AnimationManager.BLANK, 'auto', true);
 			_source.parent.addChildAt(_bmp, _source.parent.getChildIndex(_source));
+			_bmp.x = _source.x;
+			_bmp.y = _source.y;
+
 			frameNums = endFrame - beginFrame + 1;
 			AnimationManager.inst.addAnimation(this);
 		}
@@ -61,6 +67,7 @@ package bmpcache
 
 		private function bmpshow(frame:Frame):void
 		{
+			Demo.inst.stage.quality = StageQuality.LOW;
 			if (!_bmp.visible) _bmp.visible = true;
 			if (_source.visible) _source.visible = false;
 
@@ -68,19 +75,19 @@ package bmpcache
 			_bmp.bitmapData = frame.bitmapData;
 			_bmp.bitmapData.unlock();
 
-			_bmp.x = _source.x + Math.ceil(frame.bounds.x);
-			_bmp.y = _source.y + Math.ceil(frame.bounds.y);
+			_bmp.x = Math.ceil(_source.x) + Math.ceil(frame.bounds.x);
+			_bmp.y = Math.ceil(_source.y) + Math.ceil(frame.bounds.y);
 
 			_currFrame.addReference(_bmp);
 		}
 
 		private function capture(frame:Frame):void
 		{
+			Demo.inst.stage.quality = StageQuality.HIGH;
 			if (_bmp.visible) _bmp.visible = false;
 			if (!_source.visible) _source.visible = true;
 			_source.gotoAndStop(_beginFrame + _frameCount);
 
-			frame.index = _frameCount;
 			frame.bounds = _source.getBounds(_source);
 			frame.bitmapData = new BitmapData(Math.ceil(frame.bounds.width), Math.ceil(frame.bounds.height), true, 0);
 
@@ -88,7 +95,6 @@ package bmpcache
 			_matrix.ty = -Math.ceil(frame.bounds.y);
 
 			frame.bitmapData.draw(_source, _matrix, null, null, null, true);
-			AnimationManager.inst.addFrame(id, frame);
 
 			//_source.gotoAndStop(1);
 		}

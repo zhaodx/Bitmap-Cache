@@ -48,7 +48,7 @@ package
 			stage.showDefaultContextMenu = false;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
-			stage.quality = StageQuality.HIGH;
+			//stage.quality = StageQuality.HIGH;
 
 			AnimationManager.inst.init();
 
@@ -90,15 +90,15 @@ package
 
 		private function onMouseWheel(event:MouseEvent):void
 		{
-			if (event.delta < 0)
+			var scaleNum:int = int(event.delta);
+
+			if (_test_sp.scaleX >= .25 && _test_sp.scaleX <= 1)
 			{
-				_test_sp.scaleX = 1;
-				_test_sp.scaleY = 1;
-			}else
-			{
-				_test_sp.scaleX = 0.5;
-				_test_sp.scaleY = 0.5;
+				_test_sp.scaleX = _test_sp.scaleY -= scaleNum / 50;
 			}
+
+			if (_test_sp.scaleX < .25) _test_sp.scaleX = _test_sp.scaleY = .25;
+			if (_test_sp.scaleX > 1) _test_sp.scaleX = _test_sp.scaleY = 1;
 		}
 
 		private function loadAsset():void
@@ -143,7 +143,7 @@ package
 					mc.x = Math.random() * stage.stageWidth;
 					mc.y = Math.random() * stage.stageHeight;
 
-					var anim:Animation = new Animation(mc.cow, 'cow_black_anim', 100, 160);
+					var anim:Animation = new Animation(mc.cow, 'cow_black_anim', 1, 277);
 					anim.play();
 
 					_test_sp.addChild(mc);
