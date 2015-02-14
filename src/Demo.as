@@ -125,10 +125,7 @@ package
 
 		private function test():void
 		{
-			for (var i:uint = 0; i < 30; ++i)
-			{
-				showAsset();
-			}
+			for (var i:uint = 0; i < 40; ++i) showAsset();
 		}
 
 		private function showAsset():void

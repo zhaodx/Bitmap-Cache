@@ -17,10 +17,7 @@ package bmpcache
 						
 		public static function get inst():AnimationManager
 		{
-			if (!_instance)
-			{
-				_instance = new AnimationManager();
-			}
+			if (!_instance) _instance = new AnimationManager();
 
 			return _instance;
 		}
@@ -47,12 +44,13 @@ package bmpcache
 		public function addFrame(animationId:String, frame:Frame):void
 		{
 			_frameList.push(frame);
+
 			(_animations[animationId] as Vector.<Frame>)[frame.index] = frame; 
 		}
 
-		public function getFrame(animationId:String, index:uint):Frame
+		public function getFrame(animationId:String, frameIndex:uint):Frame
 		{
-			var frame:Frame = (_animations[animationId] as Vector.<Frame>)[index];
+			var frame:Frame = (_animations[animationId] as Vector.<Frame>)[frameIndex];
 
 			return frame ? frame : new Frame();
 		}
