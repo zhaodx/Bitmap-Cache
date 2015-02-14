@@ -67,7 +67,11 @@ package bmpcache
 
 		private function bmpshow(frame:Frame):void
 		{
-			Demo.inst.stage.quality = StageQuality.LOW;
+			if (Demo.inst.stage.quality != StageQuality.LOW)
+			{
+				Demo.inst.stage.quality = StageQuality.LOW;
+			}
+
 			if (!_bmp.visible) _bmp.visible = true;
 			if (_source.visible) _source.visible = false;
 
@@ -83,9 +87,14 @@ package bmpcache
 
 		private function capture(frame:Frame):void
 		{
-			Demo.inst.stage.quality = StageQuality.HIGH;
+			if (Demo.inst.stage.quality != StageQuality.HIGH)
+			{
+				Demo.inst.stage.quality = StageQuality.HIGH;
+			}
+
 			if (_bmp.visible) _bmp.visible = false;
 			if (!_source.visible) _source.visible = true;
+
 			_source.gotoAndStop(_beginFrame + _frameCount);
 
 			frame.bounds = _source.getBounds(_source);

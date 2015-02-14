@@ -92,12 +92,12 @@ package
 		{
 			var scaleNum:int = int(event.delta);
 
-			if (_test_sp.scaleX >= .25 && _test_sp.scaleX <= 1)
+			if (_test_sp.scaleX >= .5 && _test_sp.scaleX <= 1)
 			{
 				_test_sp.scaleX = _test_sp.scaleY -= scaleNum / 50;
 			}
 
-			if (_test_sp.scaleX < .25) _test_sp.scaleX = _test_sp.scaleY = .25;
+			if (_test_sp.scaleX < .5) _test_sp.scaleX = _test_sp.scaleY = .5;
 			if (_test_sp.scaleX > 1) _test_sp.scaleX = _test_sp.scaleY = 1;
 		}
 
@@ -125,8 +125,13 @@ package
 
 		private function test():void
 		{
-			for (var i:uint = 0; i < 40; ++i) showAsset();
+			for (var i:uint = 0; i < 42; ++i) 
+			{
+				showAsset();
+			}
 		}
+
+		private var iX:int, iY:int;
 
 		private function showAsset():void
 		{
@@ -140,8 +145,19 @@ package
 				{
 					var mc:MovieClip = loader.content as MovieClip;
 
-					mc.x = Math.random() * stage.stageWidth;
-					mc.y = Math.random() * stage.stageHeight;
+					//mc.x = Math.random() * stage.stageWidth;
+					//mc.y = Math.random() * stage.stageHeight;
+
+					if (iX < ((iY + 1) * 6))
+					{
+						mc.x = (iX - (iY * 6)) * mc.width;
+						mc.y = iY * mc.height;
+
+						++iX;
+					}else 
+					{
+						++iY;
+					}
 
 					var anim:Animation = new Animation(mc.cow, 'cow_black_anim', 1, 277);
 					anim.play();

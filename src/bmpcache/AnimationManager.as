@@ -24,7 +24,7 @@ package bmpcache
 
 		public function init(cacheMemony:uint=500):void
 		{
-			_cacheSize = cacheMemony;	
+			_cacheSize = cacheMemony;
 
 			_animations = {};
 			_frameList = new Vector.<Frame>();
