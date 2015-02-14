@@ -27,7 +27,7 @@ package bmpcache
 			_endFrame = endFrame;
 
 			_matrix = new Matrix();
-			_bmp = new Bitmap(AnimationManager.BLANK, 'auto', false);
+			_bmp = new Bitmap(AnimationManager.BLANK, 'auto', true);
 			_source.parent.addChildAt(_bmp, _source.parent.getChildIndex(_source));
 			frameNums = endFrame - beginFrame + 1;
 			AnimationManager.inst.addAnimation(this);
@@ -78,7 +78,7 @@ package bmpcache
 		{
 			if (_bmp.visible) _bmp.visible = false;
 			if (!_source.visible) _source.visible = true;
-			_source.gotoAndStop(_beginFrame + _frameCount - 1);
+			_source.gotoAndStop(_beginFrame + _frameCount);
 
 			frame.index = _frameCount;
 			frame.bounds = _source.getBounds(_source);

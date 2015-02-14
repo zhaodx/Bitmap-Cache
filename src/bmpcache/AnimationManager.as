@@ -57,8 +57,6 @@ package bmpcache
 
 		public function render():void
 		{
-			_tick++;
-
 			for each (var animation:Animation in _animationList)
 			{
 				if (animation.playAble)
@@ -66,6 +64,8 @@ package bmpcache
 					animation.render(_tick);
 				}
 			}
+
+			++_tick;
 		}
 	}
 }
