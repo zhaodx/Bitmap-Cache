@@ -50,7 +50,7 @@ package
 			stage.align = StageAlign.TOP_LEFT;
 			//stage.quality = StageQuality.HIGH;
 
-			AnimationManager.inst.init();
+			AnimationManager.inst.init(102400);
 
 			stage.addEventListener(Event.ENTER_FRAME, onUpdate, false, 0, true);
 			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp, false, 0, true);
@@ -152,12 +152,13 @@ package
 					{
 						mc.x = (iX - (iY * 6)) * mc.width;
 						mc.y = iY * mc.height;
-
-						++iX;
 					}else 
 					{
 						++iY;
+						mc.x = (iX - (iY * 6)) * mc.width;
+						mc.y = iY * mc.height;
 					}
+					++iX;
 
 					var anim:Animation = new Animation(mc.cow, 'cow_black_anim', 1, 277);
 					anim.play();

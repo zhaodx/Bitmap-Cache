@@ -6,12 +6,13 @@ package bmpcache
 	{
 		public static const BLANK : BitmapData = new BitmapData(1, 1, true, 0);
 
+		public var currMemory : uint;
+
 		private var 
 			_tick          : uint,
 			_cacheSize     : uint,
-			_frameList     : Vector.<Frame>,
 			_animations    : Object,
-			_animationList : Vector.<Animation>;
+			_animationList : Array;
 
 		private static var _instance : AnimationManager;
 						
@@ -22,13 +23,12 @@ package bmpcache
 			return _instance;
 		}
 
-		public function init(cacheMemony:uint=500):void
+		public function init(cacheMemony:uint=512000):void
 		{
-			_cacheSize = cacheMemony;
+			_cacheSize = cacheMemony << 10;
 
 			_animations = {};
-			_frameList = new Vector.<Frame>();
-			_animationList = new Vector.<Animation>();
+			_animationList = [];
 		}
 
 		public function addAnimation(animation:Animation):void
@@ -43,8 +43,6 @@ package bmpcache
 
 		private function addFrame(animationId:String, frame:Frame):void
 		{
-			_frameList.push(frame);
-
 			(_animations[animationId] as Vector.<Frame>)[frame.index] = frame; 
 		}
 
@@ -56,6 +54,7 @@ package bmpcache
 			{
 				frame = new Frame();
 				frame.index = frameIndex;
+
 				addFrame(animationId, frame);
 			}
 
@@ -66,13 +65,35 @@ package bmpcache
 		{
 			for each (var animation:Animation in _animationList)
 			{
-				if (animation.playAble)
-				{
-					animation.render(_tick);
-				}
+				if (animation.playAble) animation.render(_tick);
+				if (animation.ttl > 0) ++animation.ttl;
 			}
 
 			++_tick;
+
+			release();
+		}
+
+		public function get cacheAble():Boolean
+		{
+			return currMemory < _cacheSize;
+		}
+
+		private function release():void
+		{
+			if (cacheAble) return;
+
+			_animationList.sortOn('ttl', Array.DESCENDING | Array.NUMERIC);
+			var animation:Animation = _animationList[0] as Animation;
+
+			if (animation.ttl < 100) return;
+
+			for each(var frame:Frame in (_animations[animation.id] as Vector.<Frame>))
+			{
+				if (frame) frame.release();
+			}
+
+			animation.ttl = 0;
 		}
 	}
 }

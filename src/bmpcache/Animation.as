@@ -17,6 +17,7 @@ package bmpcache
 
 		public var 
 			id         : String,
+			ttl        : uint,
 			playAble   : Boolean,
 			frameNums  : uint;
 
@@ -63,6 +64,8 @@ package bmpcache
 			{
 				capture(_currFrame);
 			}
+
+			ttl = 1; //Math.random() * 100;
 		}
 
 		private function bmpshow(frame:Frame):void
@@ -75,10 +78,7 @@ package bmpcache
 			if (!_bmp.visible) _bmp.visible = true;
 			if (_source.visible) _source.visible = false;
 
-			_bmp.bitmapData.lock();
 			_bmp.bitmapData = frame.bitmapData;
-			_bmp.bitmapData.unlock();
-
 			_bmp.x = Math.ceil(_source.x) + Math.ceil(frame.bounds.x);
 			_bmp.y = Math.ceil(_source.y) + Math.ceil(frame.bounds.y);
 
@@ -97,15 +97,19 @@ package bmpcache
 
 			_source.gotoAndStop(_beginFrame + _frameCount);
 
+			if (!AnimationManager.inst.cacheAble) return;
+
 			frame.bounds = _source.getBounds(_source);
 			frame.bitmapData = new BitmapData(Math.ceil(frame.bounds.width), Math.ceil(frame.bounds.height), true, 0);
+			frame.memory = frame.bitmapData.width * frame.bitmapData.height * 4;
+			AnimationManager.inst.currMemory += frame.memory;
 
 			_matrix.tx = -Math.ceil(frame.bounds.x);
 			_matrix.ty = -Math.ceil(frame.bounds.y);
 
 			frame.bitmapData.draw(_source, _matrix, null, null, null, true);
 
-			//_source.gotoAndStop(1);
+			_source.gotoAndStop(1);
 		}
 	}
 }
