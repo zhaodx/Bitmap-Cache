@@ -70,11 +70,7 @@ package bmpcache
 
 		private function bmpshow(frame:Frame):void
 		{
-			if (Demo.inst.stage.quality != StageQuality.LOW)
-			{
-				Demo.inst.stage.quality = StageQuality.LOW;
-			}
-
+			if (_source.currentFrame != 1) _source.gotoAndStop(1);
 			if (!_bmp.visible) _bmp.visible = true;
 			if (_source.visible) _source.visible = false;
 
@@ -87,10 +83,7 @@ package bmpcache
 
 		private function capture(frame:Frame):void
 		{
-			if (Demo.inst.stage.quality != StageQuality.HIGH)
-			{
-				Demo.inst.stage.quality = StageQuality.HIGH;
-			}
+			Demo.inst.stage.quality = StageQuality.HIGH;
 
 			if (_bmp.visible) _bmp.visible = false;
 			if (!_source.visible) _source.visible = true;
@@ -108,8 +101,7 @@ package bmpcache
 			_matrix.ty = -Math.ceil(frame.bounds.y);
 
 			frame.bitmapData.draw(_source, _matrix, null, null, null, true);
-
-			_source.gotoAndStop(1);
+			Demo.inst.stage.quality = StageQuality.LOW;
 		}
 	}
 }

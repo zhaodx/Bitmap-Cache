@@ -49,6 +49,7 @@ package
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
 			//stage.quality = StageQuality.HIGH;
+			stage.quality = StageQuality.LOW;
 
 			AnimationManager.inst.init(102400);
 

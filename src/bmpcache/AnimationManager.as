@@ -71,7 +71,7 @@ package bmpcache
 
 			++_tick;
 
-			release();
+			if (!cacheAble) release();
 		}
 
 		public function get cacheAble():Boolean
@@ -81,8 +81,6 @@ package bmpcache
 
 		private function release():void
 		{
-			if (cacheAble) return;
-
 			_animationList.sortOn('ttl', Array.DESCENDING | Array.NUMERIC);
 			var animation:Animation = _animationList[0] as Animation;
 
