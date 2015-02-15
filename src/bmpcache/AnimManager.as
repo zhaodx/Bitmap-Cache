@@ -107,12 +107,11 @@ package bmpcache
 			anim.ttl = 0;
 			_reference[anim.id]--;
 
-			if (_reference[anim.id] == 0)
+			if (_reference[anim.id] == 0) return;
+
+			for each(var frame:Frame in (_anims[anim.id] as Vector.<Frame>))
 			{
-				for each(var frame:Frame in (_anims[anim.id] as Vector.<Frame>))
-				{
-					if (frame) frame.release();
-				}
+				if (frame) frame.release();
 			}
 		}
 	}
