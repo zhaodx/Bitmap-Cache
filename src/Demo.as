@@ -18,8 +18,7 @@ package
 			_mouse_pos   : Point,
 			_asset_bytes : ByteArray;
 
-		private static var 
-			_instance : Demo;  
+		private static var _instance : Demo;  
 
 		public function Demo()
 		{
@@ -48,10 +47,9 @@ package
 			stage.showDefaultContextMenu = false;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
-			//stage.quality = StageQuality.HIGH;
 			stage.quality = StageQuality.LOW;
 
-			AnimationManager.inst.init(102400);
+			AnimManager.inst.init(stage, 102400);
 
 			stage.addEventListener(Event.ENTER_FRAME, onUpdate, false, 0, true);
 			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp, false, 0, true);
@@ -64,7 +62,7 @@ package
 
 		private function onUpdate(event:Event):void
 		{
-			AnimationManager.inst.render();			
+			AnimManager.inst.render();			
 		}
 
 		private function onMouseDown(event:MouseEvent):void
@@ -162,7 +160,7 @@ package
 					++iX;
 
 					var anim:Animation = new Animation(mc.cow, 'cow_black_anim', 1, 277);
-					anim.play();
+					//var inanim:Inanimation = new Inanimation(mc.cow, 'cow_black_anim');
 
 					_test_sp.addChild(mc);
 				}

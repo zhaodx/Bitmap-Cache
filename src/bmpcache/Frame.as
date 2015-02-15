@@ -17,7 +17,7 @@ package bmpcache
 		{
 			for each(var bmp:Bitmap in _bmps)
 			{
-				bmp.bitmapData = AnimationManager.BLANK;
+				bmp.bitmapData = AnimManager.BLANK;
 			}
 
 			_bmps = [];
@@ -28,7 +28,7 @@ package bmpcache
 				bitmapData = null;
 			}
 
-			AnimationManager.inst.currMemory -= memory;
+			AnimManager.inst.currMemory -= memory;
 			memory = 0;
 		}
 
