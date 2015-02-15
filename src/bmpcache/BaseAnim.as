@@ -49,8 +49,8 @@ package bmpcache
 			if (source.visible) source.visible = false;
 
 			bmp.bitmapData = currFrame.bitmapData;
-			bmp.x = Math.ceil(source.x) + Math.ceil(currFrame.bounds.x);
-			bmp.y = Math.ceil(source.y) + Math.ceil(currFrame.bounds.y);
+			bmp.x = Math.ceil(source.x) + currFrame.bounds.x;
+			bmp.y = Math.ceil(source.y) + currFrame.bounds.y;
 
 			currFrame.addReference(bmp);
 		}
@@ -63,16 +63,22 @@ package bmpcache
 			if (!AnimManager.inst.cacheAble) return;
 			AnimManager.inst.stage.quality = StageQuality.HIGH;
 
-			currFrame.bounds = source.getBounds(source);
-			matrix.tx = -Math.ceil(currFrame.bounds.x);
-			matrix.ty = -Math.ceil(currFrame.bounds.y);
+			currFrame.bounds = getBounds();
+			matrix.tx = -currFrame.bounds.x;
+			matrix.ty = -currFrame.bounds.y;
 
-			currFrame.bitmapData = new BitmapData(Math.ceil(currFrame.bounds.width), Math.ceil(currFrame.bounds.height), true, 0);
+			currFrame.bitmapData = new BitmapData(currFrame.bounds.width, currFrame.bounds.height, true, 0);
 			currFrame.memory = currFrame.bitmapData.width * currFrame.bitmapData.height * 4;
 			AnimManager.inst.currMemory += currFrame.memory;
 
 			currFrame.bitmapData.draw(source, matrix, null, null, null, true);
 			AnimManager.inst.stage.quality = StageQuality.LOW;
+		}
+
+		private function getBounds():Rectangle
+		{
+			var rect:Rectangle = source.getBounds(source);		
+			return new Rectangle(Math.ceil(rect.x), Math.ceil(rect.y), Math.ceil(rect.width), Math.ceil(rect.height));
 		}
 	}
 }
