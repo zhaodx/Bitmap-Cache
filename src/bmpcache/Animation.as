@@ -24,8 +24,8 @@ package bmpcache
 		override public function render(tick:uint):void
 		{
 			super.render(tick);
-			if (!_playAble) return;
 
+			if (!_playAble) return;
 			frameCount = tick % frameNums;
 			currFrame = AnimManager.inst.getFrame(id, frameCount);
 
