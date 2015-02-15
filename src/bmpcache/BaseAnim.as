@@ -9,6 +9,7 @@ package bmpcache
 			id         : String,
 			ttl        : uint,
 			frameNums  : uint,
+			currFrame  : Frame,
 			renderAble : Boolean;
 
 		protected var 
@@ -16,7 +17,6 @@ package bmpcache
 			matrix     : Matrix,
 			source     : DisplayObject,
 			endFrame   : uint,
-			currFrame  : Frame,
 			frameCount : uint,
 			beginFrame : uint;
 
@@ -33,14 +33,14 @@ package bmpcache
 			source.parent.addChildAt(bmp, source.parent.getChildIndex(source));
 
 			frameNums = endFrame - beginFrame + 1;
-			AnimManager.inst.addAnim(this);
-
 			renderAble = true;
+
+			AnimManager.inst.addAnim(this);
 		}
 
 		public function render(tick:uint):void
 		{
-			ttl = 1;
+			AnimManager.inst.ttlReset(this);
 		}
 
 		protected function bmpshow():void
@@ -51,8 +51,6 @@ package bmpcache
 			bmp.bitmapData = currFrame.bitmapData;
 			bmp.x = Math.ceil(source.x) + currFrame.bounds.x;
 			bmp.y = Math.ceil(source.y) + currFrame.bounds.y;
-
-			currFrame.addReference(bmp);
 		}
 
 		protected function capture():void

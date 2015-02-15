@@ -26,7 +26,6 @@ package bmpcache
 			super.render(tick);
 			if (!_playAble) return;
 
-			if (currFrame) currFrame.removeReference(bmp);
 			frameCount = tick % frameNums;
 			currFrame = AnimManager.inst.getFrame(id, frameCount);
 

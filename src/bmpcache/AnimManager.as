@@ -5,10 +5,11 @@ package bmpcache
 	public class AnimManager 
 	{
 		private var 
-			_tick          : uint,
-			_anims         : Object,
-			_animList      : Array,
-			_cacheSize     : uint;
+			_tick      : uint,
+			_anims     : Object,
+			_animList  : Array,
+			_cacheSize : uint,
+			_reference : Object;
 
 		private static var _instance : AnimManager;
 
@@ -31,6 +32,7 @@ package bmpcache
 
 			_anims = {};
 			_animList = [];
+			_reference = {};
 			_cacheSize = cacheMemony << 10;
 		}
 
@@ -38,10 +40,23 @@ package bmpcache
 		{
 			if (!_anims[anim.id])
 			{
+				_reference[anim.id] = 0;
 				_anims[anim.id] = new Vector.<Frame>(anim.frameNums, true);
 			}
 
 			_animList.push(anim);
+
+			ttlReset(anim);
+		}
+
+		public function ttlReset(anim:BaseAnim):void
+		{
+			if (anim.ttl == 0)
+			{
+				_reference[anim.id]++;
+			}
+
+			anim.ttl = 1; //+ Math.random() * 100;
 		}
 
 		private function addFrame(sid:String, frame:Frame):void
@@ -89,12 +104,16 @@ package bmpcache
 
 			if (anim.ttl < 100) return;
 
-			for each(var frame:Frame in (_anims[anim.id] as Vector.<Frame>))
-			{
-				if (frame) frame.release();
-			}
-
 			anim.ttl = 0;
+			_reference[anim.id]--;
+
+			if (_reference[anim.id] == 0)
+			{
+				for each(var frame:Frame in (_anims[anim.id] as Vector.<Frame>))
+				{
+					if (frame) frame.release();
+				}
+			}
 		}
 	}
 }
