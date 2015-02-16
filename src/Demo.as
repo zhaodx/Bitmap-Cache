@@ -162,6 +162,7 @@ package
 					var asset:Asset = new Asset(this, true);
 					asset.setSource(mc.cow, 'cow_black_anim');
 					asset.switchAnim(1, 19);
+					//asset.gotoAndStop(100);
 
 					_test_sp.addChild(mc);
 				}

@@ -11,7 +11,7 @@ package bmpcache
 			_sourId   : String,
 			_baseId   : String,
 			_isAnim   : Boolean,
-			_currAnim : Animation;
+			_currAnim : BaseAnim;
 			
 		public function Asset(classOrInst:*, animation:Boolean=true)
 		{
@@ -25,7 +25,7 @@ package bmpcache
 		public function switchAnim(bFrame:uint, eFrame:uint):void
 		{
 			if (!_isAnim) return;
-			if (_currAnim) _currAnim.stop();
+			if (_currAnim is Animation) (_currAnim as Animation).stop();
 
 			var newId:String = getId(_sourId, bFrame, eFrame);
 
@@ -37,7 +37,22 @@ package bmpcache
 				_currAnim = _anims[newId];
 			}
 
-			_currAnim.play();
+			if (_currAnim is Animation) (_currAnim as Animation).play();
+		}
+
+		public function gotoAndStop(frame:uint):void
+		{
+			if (_currAnim is Animation) (_currAnim as Animation).stop();
+
+			var newId:String = getId(_sourId, frame);
+
+			_currAnim = _anims[newId];
+
+			if (!_currAnim)
+			{
+				_anims[newId] = new Inanimation(newId, _source, _bmp, frame);
+				_currAnim = _anims[newId];
+			}
 		}
 
 		public function setSource(sour:DisplayObject, sid:String='asset'):void

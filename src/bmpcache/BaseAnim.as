@@ -43,6 +43,7 @@ package bmpcache
 
 		protected function bmpshow():void
 		{
+
 			if (!bmp.visible) bmp.visible = true;
 			if (source.visible) source.visible = false;
 
