@@ -49,7 +49,7 @@ package
 			stage.align = StageAlign.TOP_LEFT;
 			stage.quality = StageQuality.LOW;
 
-			AnimManager.inst.init(stage, 10240);
+			AnimManager.inst.init(stage, 102400);
 
 			stage.addEventListener(Event.ENTER_FRAME, onUpdate, false, 0, true);
 			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp, false, 0, true);
