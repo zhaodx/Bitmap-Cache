@@ -4,7 +4,7 @@ package bmpcache
 
 	public class Animation extends BaseAnim
 	{
-		private var _playAble : Boolean = true;
+		private var _playAble : Boolean = false;
 
 		public function Animation(sour:MovieClip, sid:String, bFrame:uint, eFrame:uint)	
 		{

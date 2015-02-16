@@ -160,6 +160,7 @@ package
 					++iX;
 
 					var anim:Animation = new Animation(mc.cow, 'cow_black_anim', 1, 277);
+					anim.play();
 					//var inanim:Inanimation = new Inanimation(mc.cow, 'cow_black_anim');
 
 					_test_sp.addChild(mc);
