@@ -40,7 +40,7 @@ package bmpcache
 			_currAnim.play();
 		}
 
-		public function setSource(sour:Sprite, sid:String='asset'):void
+		public function setSource(sour:DisplayObject, sid:String='asset'):void
 		{
 			if (sid == _sourId) return;
 			if (_source) _source.parent.removeChild(_bmp);
