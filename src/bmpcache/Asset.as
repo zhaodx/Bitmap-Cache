@@ -15,7 +15,7 @@ package bmpcache
 			_baseId      : String,
 			_isAnim      : Boolean,
 			_currAnim    : BaseAnim,
-			_finishEvent : Boolean;
+			_stopToEnd   : Boolean;
 	
 		public static const FINISH_EVENT : String = "finish_event";
 				
@@ -28,7 +28,7 @@ package bmpcache
 			bmp = new Bitmap(AnimManager.BLANK, 'auto', true);
 		}
 
-		public function switchAnim(bFrame:uint, eFrame:uint, finishEvent:Boolean=false):void
+		public function switchAnim(bFrame:uint, eFrame:uint, stopToEnd:Boolean=false):void
 		{
 			if (!_isAnim) return;
 			if (_currAnim is Animation) (_currAnim as Animation).stop();
@@ -44,7 +44,12 @@ package bmpcache
 
 			if (_currAnim is Animation) (_currAnim as Animation).play();
 
-			_finishEvent = finishEvent;
+			_stopToEnd = stopToEnd;
+		}
+
+		public function stopToEnd():void
+		{
+			_stopToEnd = true;
 		}
 
 		public function stopAnim():void
@@ -53,7 +58,7 @@ package bmpcache
 			if (_currAnim is Animation) (_currAnim as Animation).stop();
 		}
 
-		public function gotoAndStop(frame:uint, needEvent:Boolean=false):void
+		public function gotoAndStop(frame:uint):void
 		{
 			if (_currAnim is Animation) (_currAnim as Animation).stop();
 
@@ -68,8 +73,6 @@ package bmpcache
 			{
 				if(_currAnim is Inanimation) (_currAnim as Inanimation).draw();
 			}
-
-			if (needEvent) finishEvent(); 
 		}
 
 		public function setSource(sour:DisplayObject, sid:String='asset'):void
@@ -90,7 +93,12 @@ package bmpcache
 
 		public function finishEvent():void
 		{
-			if (_finishEvent) dispatchEvent(new Event(FINISH_EVENT));
+			if (_stopToEnd)
+			{
+				stopAnim();
+				dispatchEvent(new Event(FINISH_EVENT));
+				trace('stop')
+			}
 		}
 
 		private function getId(sourId:String, bFrame:uint=1, eFrame:uint=1):String
