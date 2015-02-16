@@ -159,9 +159,9 @@ package
 					}
 					++iX;
 
-					var anim:Animation = new Animation(mc.cow, 'cow_black_anim', 1, 277);
-					anim.play();
-					//var inanim:Inanimation = new Inanimation(mc.cow, 'cow_black_anim');
+					var asset:Asset = new Asset(this, true);
+					asset.setSource(mc.cow, 'cow_black_anim');
+					asset.switchAnim(1, 19);
 
 					_test_sp.addChild(mc);
 				}

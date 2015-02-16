@@ -4,9 +4,9 @@ package bmpcache
 
 	public class Inanimation extends BaseAnim
 	{
-		public function Inanimation(sour:Sprite, sid:String)	
+		public function Inanimation(sid:String, sour:DisplayObject, sbmp:Bitmap)	
 		{
-			super(sour, sid, 1, 1);
+			super(sid, sour, sbmp, 1, 1);
 
 			currFrame = AnimManager.inst.getFrame(id);
 			capture();

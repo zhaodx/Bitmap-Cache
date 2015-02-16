@@ -1,6 +1,7 @@
 package bmpcache
 {
 	import flash.display.*;
+	import flash.utils.*;
 
 	public class AnimManager 
 	{
@@ -113,6 +114,15 @@ package bmpcache
 			{
 				if (frame) frame.release();
 			}
+		}
+
+		public static function getClassName(classOrInst:*):String
+		{
+			var description:String = getQualifiedClassName(classOrInst);
+			var index:int = description.lastIndexOf(':');
+
+			if (index != -1) return description.slice(index + 1);
+			return description;
 		}
 	}
 }

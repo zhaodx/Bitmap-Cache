@@ -20,20 +20,18 @@ package bmpcache
 			frameCount : uint,
 			beginFrame : uint;
 
-		public function BaseAnim(sour:DisplayObject, sid:String, bFrame:uint, eFrame:uint)
+		public function BaseAnim(sid:String, sour:DisplayObject, sbmp:Bitmap, bFrame:uint, eFrame:uint)
 		{
 			id = sid;
 
+			bmp = sbmp;
 			source = sour;
 			beginFrame = bFrame;
 			endFrame = eFrame;
 
-			matrix = new Matrix();
-			bmp = new Bitmap(AnimManager.BLANK, 'auto', true);
-			source.parent.addChildAt(bmp, source.parent.getChildIndex(source));
-
-			frameNums = endFrame - beginFrame + 1;
 			renderAble = true;
+			matrix = new Matrix();
+			frameNums = endFrame - beginFrame + 1;
 
 			AnimManager.inst.addAnim(this);
 		}

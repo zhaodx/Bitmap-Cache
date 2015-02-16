@@ -4,11 +4,11 @@ package bmpcache
 
 	public class Animation extends BaseAnim
 	{
-		private var _playAble : Boolean = false;
+		private var _playAble : Boolean;
 
-		public function Animation(sour:MovieClip, sid:String, bFrame:uint, eFrame:uint)	
+		public function Animation(sid:String, sour:DisplayObject, sbmp:Bitmap, bFrame:uint, eFrame:uint)	
 		{
-			super(sour, sid, bFrame, eFrame);
+			super(sid, sour, sbmp, bFrame, eFrame);
 		}
 
 		public function play():void
@@ -26,6 +26,7 @@ package bmpcache
 			super.render(tick);
 
 			if (!_playAble) return;
+
 			frameCount = tick % frameNums;
 			currFrame = AnimManager.inst.getFrame(id, frameCount);
 
