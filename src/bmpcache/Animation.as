@@ -6,9 +6,9 @@ package bmpcache
 	{
 		private var _playAble : Boolean;
 
-		public function Animation(sid:String, sour:DisplayObject, sbmp:Bitmap, bFrame:uint, eFrame:uint)	
+		public function Animation(sid:String, ast:Asset, bFrame:uint, eFrame:uint)	
 		{
-			super(sid, sour, sbmp, bFrame, eFrame);
+			super(sid, ast, bFrame, eFrame);
 		}
 
 		public function play():void
@@ -37,6 +37,8 @@ package bmpcache
 			{
 				capture();
 			}
+
+			if (beginFrame + frameCount == endFrame) finishLoop();
 		}
 
 		override protected function bmpshow():void
@@ -49,6 +51,11 @@ package bmpcache
 		{
 			MovieClip(source).gotoAndStop(beginFrame + frameCount);
 			super.capture();
+		}
+
+		private function finishLoop():void
+		{
+			asset.finishEvent();
 		}
 	}
 }

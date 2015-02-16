@@ -14,18 +14,19 @@ package bmpcache
 
 		protected var 
 			bmp        : Bitmap,
+			asset      : Asset,
 			matrix     : Matrix,
 			source     : DisplayObject,
 			endFrame   : uint,
 			frameCount : uint,
 			beginFrame : uint;
 
-		public function BaseAnim(sid:String, sour:DisplayObject, sbmp:Bitmap, bFrame:uint, eFrame:uint)
+		public function BaseAnim(sid:String, ast:Asset, bFrame:uint, eFrame:uint)
 		{
 			id = sid;
-
-			bmp = sbmp;
-			source = sour;
+			asset = ast;
+			bmp = asset.bmp;
+			source = asset.source;
 			beginFrame = bFrame;
 			endFrame = eFrame;
 

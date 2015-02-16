@@ -6,14 +6,19 @@ package bmpcache
 	{
 		public var index : uint;
 
-		public function Inanimation(sid:String, sour:DisplayObject, sbmp:Bitmap, frameIndex:uint=1)
+		public function Inanimation(sid:String, ast:Asset, frameIndex:uint=1)
 		{
-			super(sid, sour, sbmp, 1, 1);
+			super(sid, ast, 1, 1);
 
 			index = frameIndex;
 			currFrame = AnimManager.inst.getFrame(id);
 
 			capture();
+		}
+
+		public function draw():void 
+		{
+			bmpshow();
 		}
 
 		override protected function bmpshow():void
@@ -27,7 +32,7 @@ package bmpcache
 			if (source is MovieClip) MovieClip(source).gotoAndStop(index);
 			super.capture();
 
-			bmpshow();
+			draw();
 		}
 	}
 }
