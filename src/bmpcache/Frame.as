@@ -5,11 +5,12 @@ package bmpcache
 
 	public class Frame
 	{
-		public var 
+		public var
 			index          : uint,
 			memory         : uint,
 			bounds         : Rectangle,
-			bitmapData     : BitmapData;
+			bitmapData     : BitmapData,
+			referenceCount : uint;
 
 		public function release():void
 		{
@@ -19,7 +20,7 @@ package bmpcache
 				bitmapData = null;
 			}
 
-			AnimManager.inst.currMemory -= memory;
+			AssetManager.inst.currMemory -= memory;
 			memory = 0;
 		}
 	}

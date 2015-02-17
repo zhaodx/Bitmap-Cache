@@ -3,15 +3,15 @@ package bmpcache
 	import flash.display.*;
 	import flash.utils.*;
 
-	public class AnimManager 
+	public class AssetManager 
 	{
 		private var 
-			_anims     : Object,
+			_assets    : Object,
 			_animList  : Array,
 			_cacheSize : uint,
 			_reference : Object;
 
-		private static var _instance : AnimManager;
+		private static var _instance : AssetManager;
 
 		public var 
 			stage      : Stage,
@@ -19,9 +19,9 @@ package bmpcache
 
 		public static const BLANK : BitmapData = new BitmapData(1, 1, true, 0);
 						
-		public static function get inst():AnimManager
+		public static function get inst():AssetManager
 		{
-			if (!_instance) _instance = new AnimManager();
+			if (!_instance) _instance = new AssetManager();
 
 			return _instance;
 		}
@@ -30,61 +30,53 @@ package bmpcache
 		{
 			stage = stg;
 
-			_anims = {};
+			_assets = {};
 			_animList = [];
 			_reference = {};
 			_cacheSize = cacheMemony << 10;
 		}
 
+		public function addAsset(key:String, totalFrames:uint):void
+		{
+			if (!_assets[key])
+			{
+				_assets[key] = new Vector.<Frame>(totalFrames, true);
+			}
+		}
+
 		public function addAnim(anim:Animation):void
 		{
-			if (!_anims[anim.id])
+			if (!_reference[anim.id])
 			{
 				_reference[anim.id] = 0;
-				_anims[anim.id] = new Vector.<Frame>(anim.frameNums, true);
 			}
 
-			_animList.push(anim);
-
 			ttlReset(anim);
+			_animList.push(anim);
 		}
 
 		private function ttlReset(anim:Animation):void
 		{
-			if (anim.ttl == 0)
-			{
-				_reference[anim.id]++;
-			}
-
-			anim.ttl = 1; //+ Math.random() * 100;
+			if (anim.ttl == 0) _reference[anim.id]++;
+			if (anim.renderAble || anim.isCurrAnim) anim.ttl = 1; //+ Math.random() * 100;
 		}
 
-		private function addFrame(sid:String, frame:Frame):void
+		public function addFrame(aid:String, frame:Frame):void
 		{
-			(_anims[sid] as Vector.<Frame>)[frame.index] = frame; 
+			(_assets[aid] as Vector.<Frame>)[frame.index] = frame; 
 		}
 
-		public function getFrame(sid:String, frameIndex:uint=0):Frame
+		public function getFrame(aid:String, frameIndex:uint=0):Frame
 		{
-			var frame:Frame = (_anims[sid] as Vector.<Frame>)[frameIndex];
-
-			if (!frame)
-			{
-				frame = new Frame();
-				frame.index = frameIndex;
-
-				addFrame(sid, frame);
-			}
-
-			return frame;
+			return (_assets[aid] as Vector.<Frame>)[frameIndex];
 		}
 
 		public function tick():void
 		{
 			for each (var anim:Animation in _animList)
 			{
-				if (anim.renderAble) ttlReset(anim);
 				if (anim.ttl > 0) ++anim.ttl;
+				ttlReset(anim);
 			}
 
 			if (!cacheAble) release();
@@ -107,10 +99,10 @@ package bmpcache
 
 			if (_reference[anim.id] > 0) return;
 
-			for each(var frame:Frame in (_anims[anim.id] as Vector.<Frame>))
-			{
-				if (frame) frame.release();
-			}
+			//for each(var frame:Frame in (_anims[anim.id] as Vector.<Frame>))
+			//{
+			//	if (frame) frame.release();
+			//}
 		}
 
 		public static function getClassName(classOrInst:*):String

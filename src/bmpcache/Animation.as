@@ -8,9 +8,11 @@ package bmpcache
 		public var 
 			id         : String,
 			ttl        : uint,
+			assetId    : String,
 			frameNums  : uint,
 			currFrame  : Frame,
-			renderAble : Boolean;
+			renderAble : Boolean,
+			isCurrAnim : Boolean;
 
 		protected var 
 			bmp        : Bitmap,
@@ -21,11 +23,12 @@ package bmpcache
 			beginFrame : uint;
 
 
-		public function Animation(sid:String, sour:DisplayObject, sbmp:Bitmap, bFrame:uint=1, eFrame:uint=1)
+		public function Animation(aid:String, sid:String, sour:DisplayObject, sbmp:Bitmap, bFrame:uint=1, eFrame:uint=1)
 		{
 			id = sid;
 			bmp = sbmp;
 			source = sour;
+			assetId = aid;
 			beginFrame = bFrame;
 			endFrame = eFrame;
 
@@ -33,23 +36,43 @@ package bmpcache
 			matrix = new Matrix();
 			frameNums = endFrame - beginFrame + 1;
 
-			AnimManager.inst.addAnim(this);
+			initFrame();
+			AssetManager.inst.addAnim(this);
+
 			gotoFrame(beginFrame);
 		}
 
-		public function gotoFrame(frame:uint):void
+		private function initFrame():void
 		{
-			if (frame < beginFrame || frame > endFrame) return;
+			for (var i:uint = beginFrame - 1; i < endFrame - 1; ++i)	
+			{
+				var frame:Frame = AssetManager.inst.getFrame(assetId, i);	
 
-			frameCount = frame - beginFrame;
-			currFrame = AnimManager.inst.getFrame(id, frameCount);
+				if (!frame)
+				{
+					frame = new Frame();
+					frame.index = i;
+
+					AssetManager.inst.addFrame(assetId, frame);
+				}
+
+				frame.referenceCount++;
+			}
+		}
+
+		public function gotoFrame(frameIndex:uint):void
+		{
+			if (frameCount == frameIndex) return;
+
+			frameCount = frameIndex;
+			currFrame = AssetManager.inst.getFrame(assetId, frameCount);
 
 			if (currFrame.bitmapData)
 			{
 				bmpshow();
 			}else
 			{
-				capture(frame);
+				capture();
 			}
 		}
 
@@ -68,13 +91,13 @@ package bmpcache
 			bmp.y = Math.ceil(source.y) + currFrame.bounds.y;
 		}
 
-		protected function capture(frame:uint):void
+		protected function capture():void
 		{
-			AnimManager.inst.stage.quality = StageQuality.HIGH;
+			AssetManager.inst.stage.quality = StageQuality.HIGH;
 
-			if (source is MovieClip) MovieClip(source).gotoAndStop(frame);
+			if (source is MovieClip) MovieClip(source).gotoAndStop(frameCount);
 
-			if (!AnimManager.inst.cacheAble)
+			if (!AssetManager.inst.cacheAble)
 			{
 				if (bmp.visible) bmp.visible = false;
 				if (!source.visible) source.visible = true;
@@ -88,10 +111,10 @@ package bmpcache
 
 			currFrame.bitmapData = new BitmapData(currFrame.bounds.width, currFrame.bounds.height, true, 0x55FF0000);
 			currFrame.memory = currFrame.bitmapData.width * currFrame.bitmapData.height * 4;
-			AnimManager.inst.currMemory += currFrame.memory;
+			AssetManager.inst.currMemory += currFrame.memory;
 
 			currFrame.bitmapData.draw(source, matrix, null, null, null, true);
-			AnimManager.inst.stage.quality = StageQuality.LOW;
+			AssetManager.inst.stage.quality = StageQuality.LOW;
 
 			bmpshow();
 		}

@@ -51,7 +51,7 @@ package
 			stage.align = StageAlign.TOP_LEFT;
 			stage.quality = StageQuality.LOW;
 
-			AnimManager.inst.init(stage, 102400);
+			AssetManager.inst.init(stage, 102400);
 
 			stage.addEventListener(Event.ENTER_FRAME, onUpdate, false, 0, true);
 			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp, false, 0, true);
@@ -64,11 +64,11 @@ package
 
 		private function onUpdate(event:Event):void
 		{
-			AnimManager.inst.tick();			
+			AssetManager.inst.tick();			
 
 			for each(var asset:Asset in _assts)
 			{
-				asset.gotoFrame(51 + (_tick % (103 - 51 + 1)));
+				asset.gotoFrame(1 + (_tick % (50 - 1 + 1)));
 			}
 
 			++_tick;
@@ -172,7 +172,7 @@ package
 
 					var asset:Asset = new Asset(this);
 					asset.setSource(mc.cow, 'cow_black_anim');
-					asset.switchAnim(51, 103);
+					asset.switchAnim(1, 50);
 
 					_assts.push(asset);
 					_test_sp.addChild(mc);

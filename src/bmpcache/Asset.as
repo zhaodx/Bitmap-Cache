@@ -12,29 +12,31 @@ package bmpcache
 			_sourId      : String,
 			_baseId      : String,
 			_isAnim      : Boolean,
+			_assetId     : String,
 			_currAnim    : Animation,
-			_stopToEnd   : Boolean;
-	
-		public static const FINISH_EVENT : String = "finish_event";
+			_totalFrames : uint;
 				
 		public function Asset(classOrInst:*)
 		{
 			_anims = {};
-			_baseId = AnimManager.getClassName(classOrInst);
+			_baseId = AssetManager.getClassName(classOrInst);
 
-			_bmp = new Bitmap(AnimManager.BLANK, 'auto', true);
+			_bmp = new Bitmap(AssetManager.BLANK, 'auto', true);
 		}
 
 		public function switchAnim(bFrame:uint, eFrame:uint):void
 		{
-			var newId:String = getId(_sourId, bFrame, eFrame);
+			if (_currAnim) _currAnim.isCurrAnim = false;
 
+			var newId:String = getId(bFrame, eFrame);
 			_currAnim = _anims[newId];
 
 			if (!_currAnim)
 			{
-				_anims[newId] = _currAnim = new Animation(newId, _source, _bmp, bFrame, eFrame);
+				_anims[newId] = _currAnim = new Animation(_assetId, newId, _source, _bmp, bFrame, eFrame);
 			}
+
+			_currAnim.isCurrAnim = true;
 		}
 
 		public function gotoFrame(frame:uint):void
@@ -44,17 +46,20 @@ package bmpcache
 
 		public function setSource(sour:DisplayObject, sid:String='asset'):void
 		{
-			if (sid == _sourId) return;
-			if (_source) _source.parent.removeChild(_bmp);
+			if (_source) return;
 
 			_sourId = sid;
 			_source = sour;
 			_source.parent.addChildAt(_bmp, _source.parent.getChildIndex(_source));
+			_assetId = _baseId + '_' + _sourId;
+			_totalFrames = (_source is MovieClip) ? (_source as MovieClip).totalFrames : 1;
+
+			AssetManager.inst.addAsset(_assetId, _totalFrames);
 		}
 
-		private function getId(sourId:String, bFrame:uint=1, eFrame:uint=1):String
+		private function getId(bFrame:uint=1, eFrame:uint=1):String
 		{
-			return [_baseId, sourId, bFrame, eFrame].join('_');
+			return [_assetId, bFrame, eFrame].join('_');
 		}
 	}
 }
