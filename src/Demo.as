@@ -14,8 +14,10 @@ package
 	public class Demo extends Sprite
 	{
 		private var 
+			_tick        : uint,
 			_test_sp     : Sprite,
 			_mouse_pos   : Point,
+			_assts       : Vector.<Asset>,
 			_asset_bytes : ByteArray;
 
 		private static var _instance : Demo;  
@@ -62,7 +64,14 @@ package
 
 		private function onUpdate(event:Event):void
 		{
-			AnimManager.inst.render();			
+			AnimManager.inst.tick();			
+
+			for each(var asset:Asset in _assts)
+			{
+				asset.gotoFrame(51 + (_tick % (103 - 51 + 1)));
+			}
+
+			++_tick;
 		}
 
 		private function onMouseDown(event:MouseEvent):void
@@ -124,6 +133,8 @@ package
 
 		private function test():void
 		{
+			_assts = new Vector.<Asset>();
+
 			for (var i:uint = 0; i < 1; ++i) 
 			{
 				showAsset();
@@ -159,11 +170,11 @@ package
 					}
 					++iX;
 
-					var asset:Asset = new Asset(this, true);
+					var asset:Asset = new Asset(this);
 					asset.setSource(mc.cow, 'cow_black_anim');
-					asset.switchAnim(51, 103, false);
-					//asset.gotoAndStop(100);
+					asset.switchAnim(51, 103);
 
+					_assts.push(asset);
 					_test_sp.addChild(mc);
 				}
 			}

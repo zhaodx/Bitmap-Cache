@@ -6,7 +6,6 @@ package bmpcache
 	public class AnimManager 
 	{
 		private var 
-			_tick      : uint,
 			_anims     : Object,
 			_animList  : Array,
 			_cacheSize : uint,
@@ -37,7 +36,7 @@ package bmpcache
 			_cacheSize = cacheMemony << 10;
 		}
 
-		public function addAnim(anim:BaseAnim):void
+		public function addAnim(anim:Animation):void
 		{
 			if (!_anims[anim.id])
 			{
@@ -50,7 +49,7 @@ package bmpcache
 			ttlReset(anim);
 		}
 
-		public function ttlReset(anim:BaseAnim):void
+		private function ttlReset(anim:Animation):void
 		{
 			if (anim.ttl == 0)
 			{
@@ -80,15 +79,13 @@ package bmpcache
 			return frame;
 		}
 
-		public function render():void
+		public function tick():void
 		{
-			for each (var anim:BaseAnim in _animList)
+			for each (var anim:Animation in _animList)
 			{
-				if (anim.renderAble) anim.render(_tick);
+				if (anim.renderAble) ttlReset(anim);
 				if (anim.ttl > 0) ++anim.ttl;
 			}
-
-			++_tick;
 
 			if (!cacheAble) release();
 		}
@@ -101,7 +98,7 @@ package bmpcache
 		private function release():void
 		{
 			_animList.sortOn('ttl', Array.DESCENDING | Array.NUMERIC);
-			var anim:BaseAnim = _animList[0] as BaseAnim;
+			var anim:Animation = _animList[0] as Animation;
 
 			if (anim.ttl < 100) return;
 

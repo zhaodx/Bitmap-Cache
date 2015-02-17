@@ -5,99 +5,51 @@ package bmpcache
 
 	public class Asset extends EventDispatcher
 	{
-		public var
-			bmp      : Bitmap,
-			source   : DisplayObject;
-			
 		private var
+			_bmp         : Bitmap,
 			_anims       : Object,
+			_source      : DisplayObject,
 			_sourId      : String,
 			_baseId      : String,
 			_isAnim      : Boolean,
-			_currAnim    : BaseAnim,
+			_currAnim    : Animation,
 			_stopToEnd   : Boolean;
 	
 		public static const FINISH_EVENT : String = "finish_event";
 				
-		public function Asset(classOrInst:*, animation:Boolean=true)
+		public function Asset(classOrInst:*)
 		{
 			_anims = {};
-			_isAnim = animation;
 			_baseId = AnimManager.getClassName(classOrInst);
 
-			bmp = new Bitmap(AnimManager.BLANK, 'auto', true);
+			_bmp = new Bitmap(AnimManager.BLANK, 'auto', true);
 		}
 
-		public function switchAnim(bFrame:uint, eFrame:uint, stopToEnd:Boolean=false):void
+		public function switchAnim(bFrame:uint, eFrame:uint):void
 		{
-			if (!_isAnim) return;
-			if (_currAnim is Animation) (_currAnim as Animation).stop();
-
 			var newId:String = getId(_sourId, bFrame, eFrame);
 
 			_currAnim = _anims[newId];
 
 			if (!_currAnim)
 			{
-				_anims[newId] = _currAnim = new Animation(newId, this, bFrame, eFrame);
+				_anims[newId] = _currAnim = new Animation(newId, _source, _bmp, bFrame, eFrame);
 			}
-
-			if (_currAnim is Animation) (_currAnim as Animation).play();
-
-			_stopToEnd = stopToEnd;
 		}
 
-		public function stopToEnd():void
+		public function gotoFrame(frame:uint):void
 		{
-			_stopToEnd = true;
-		}
-
-		public function stopAnim():void
-		{
-			if (!_isAnim) return;
-			if (_currAnim is Animation) (_currAnim as Animation).stop();
-		}
-
-		public function gotoAndStop(frame:uint):void
-		{
-			if (_currAnim is Animation) (_currAnim as Animation).stop();
-
-			var newId:String = getId(_sourId, frame);
-
-			_currAnim = _anims[newId];
-
-			if (!_currAnim)
-			{
-				_anims[newId] = _currAnim = new Inanimation(newId, this, frame);
-			}else
-			{
-				if(_currAnim is Inanimation) (_currAnim as Inanimation).draw();
-			}
+			if (_currAnim) _currAnim.gotoFrame(frame);
 		}
 
 		public function setSource(sour:DisplayObject, sid:String='asset'):void
 		{
 			if (sid == _sourId) return;
-			if (source) source.parent.removeChild(bmp);
+			if (_source) _source.parent.removeChild(_bmp);
 
 			_sourId = sid;
-			source = sour;
-			source.parent.addChildAt(bmp, source.parent.getChildIndex(source));
-
-			if (!_isAnim)
-			{
-				var newId:String = getId(sid);
-				_anims[newId] = new Inanimation(newId, this);
-			}
-		}
-
-		public function finishEvent():void
-		{
-			if (_stopToEnd)
-			{
-				stopAnim();
-				dispatchEvent(new Event(FINISH_EVENT));
-			}
+			_source = sour;
+			_source.parent.addChildAt(_bmp, _source.parent.getChildIndex(_source));
 		}
 
 		private function getId(sourId:String, bFrame:uint=1, eFrame:uint=1):String
