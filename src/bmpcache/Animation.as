@@ -93,7 +93,7 @@ package bmpcache
 
 		protected function capture():void
 		{
-			AssetManager.inst.stage.quality = StageQuality.HIGH;
+			AssetManager.inst.stage.quality = StageQuality.BEST;
 
 			if (source is MovieClip) MovieClip(source).gotoAndStop(frameCount);
 

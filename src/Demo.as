@@ -49,7 +49,7 @@ package
 			stage.showDefaultContextMenu = false;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
-			stage.quality = StageQuality.LOW;
+			stage.quality = StageQuality.MEDIUM;
 
 			AssetManager.inst.init(stage, 1024000);
 
