@@ -6,26 +6,25 @@ package bmpcache
 	public class Animation 
 	{
 		public var 
-			id         : String,
-			ttl        : uint,
-			assetId    : String,
-			frameNums  : uint,
-			currFrame  : Frame,
-			renderAble : Boolean,
-			isCurrAnim : Boolean;
+			ttl            : uint,
+			assetId        : String,
+			endFrame       : uint,
+			frameNums      : uint,
+			currFrame      : Frame,
+			beginFrame     : uint,
+			renderAble     : Boolean,
+			isCurrAnim     : Boolean,
+			referenceCount : uint; 
 
 		protected var 
 			bmp        : Bitmap,
 			matrix     : Matrix,
 			source     : DisplayObject,
-			endFrame   : uint,
-			frameCount : uint,
-			beginFrame : uint;
+			frameCount : uint;
 
 
 		public function Animation(aid:String, sid:String, sour:DisplayObject, sbmp:Bitmap, bFrame:uint=1, eFrame:uint=1)
 		{
-			id = sid;
 			bmp = sbmp;
 			source = sour;
 			assetId = aid;
@@ -44,7 +43,7 @@ package bmpcache
 
 		private function initFrame():void
 		{
-			for (var i:uint = beginFrame - 1; i < endFrame - 1; ++i)	
+			for (var i:uint = beginFrame - 1; i < endFrame; ++i)	
 			{
 				var frame:Frame = AssetManager.inst.getFrame(assetId, i);	
 
@@ -56,7 +55,7 @@ package bmpcache
 					AssetManager.inst.addFrame(assetId, frame);
 				}
 
-				frame.referenceCount++;
+				++frame.referenceCount;
 			}
 		}
 
@@ -65,7 +64,7 @@ package bmpcache
 			if (frameCount == frameIndex) return;
 
 			frameCount = frameIndex;
-			currFrame = AssetManager.inst.getFrame(assetId, frameCount);
+			currFrame = AssetManager.inst.getFrame(assetId, frameCount - 1);
 
 			if (currFrame.bitmapData)
 			{
@@ -87,8 +86,9 @@ package bmpcache
 			if (source.visible) source.visible = false;
 
 			bmp.bitmapData = currFrame.bitmapData;
-			bmp.x = Math.ceil(source.x) + currFrame.bounds.x;
-			bmp.y = Math.ceil(source.y) + currFrame.bounds.y;
+
+			bmp.x = Math.ceil(source.x) + Math.ceil(currFrame.bounds.x - 2);
+			bmp.y = Math.ceil(source.y) + Math.ceil(currFrame.bounds.y - 2);
 		}
 
 		protected function capture():void
@@ -105,24 +105,18 @@ package bmpcache
 				return;
 			}
 
-			currFrame.bounds = getBounds();
-			matrix.tx = -currFrame.bounds.x;
-			matrix.ty = -currFrame.bounds.y;
+			currFrame.bounds = source.getBounds(source);
+			matrix.tx = -Math.ceil(currFrame.bounds.x - 2);
+			matrix.ty = -Math.ceil(currFrame.bounds.y - 2);
 
-			currFrame.bitmapData = new BitmapData(currFrame.bounds.width, currFrame.bounds.height, true, 0x55FF0000);
+			currFrame.bitmapData = new BitmapData(Math.ceil(currFrame.bounds.width + 4), Math.ceil(currFrame.bounds.height + 4), true, 0x55FF0000);
 			currFrame.memory = currFrame.bitmapData.width * currFrame.bitmapData.height * 4;
 			AssetManager.inst.currMemory += currFrame.memory;
 
 			currFrame.bitmapData.draw(source, matrix, null, null, null, true);
-			AssetManager.inst.stage.quality = StageQuality.LOW;
+			AssetManager.inst.stage.quality = AssetManager.inst.quality;
 
 			bmpshow();
-		}
-
-		private function getBounds():Rectangle
-		{
-			var rect:Rectangle = source.getBounds(source);		
-			return new Rectangle(Math.ceil(rect.x), Math.ceil(rect.y), Math.ceil(rect.width), Math.ceil(rect.height));
 		}
 	}
 }

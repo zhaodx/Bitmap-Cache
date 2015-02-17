@@ -51,7 +51,7 @@ package
 			stage.align = StageAlign.TOP_LEFT;
 			stage.quality = StageQuality.LOW;
 
-			AssetManager.inst.init(stage, 102400);
+			AssetManager.inst.init(stage, 1024000);
 
 			stage.addEventListener(Event.ENTER_FRAME, onUpdate, false, 0, true);
 			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp, false, 0, true);
@@ -107,6 +107,8 @@ package
 
 			if (_test_sp.scaleX < .5) _test_sp.scaleX = _test_sp.scaleY = .5;
 			if (_test_sp.scaleX > 1) _test_sp.scaleX = _test_sp.scaleY = 1;
+
+			AssetManager.inst.scale = _test_sp.scaleX < 1;
 		}
 
 		private function loadAsset():void

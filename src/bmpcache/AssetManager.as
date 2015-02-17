@@ -2,19 +2,21 @@ package bmpcache
 {
 	import flash.display.*;
 	import flash.utils.*;
+	import flash.geom.*;
 
 	public class AssetManager 
 	{
 		private var 
 			_assets    : Object,
 			_animList  : Array,
-			_cacheSize : uint,
-			_reference : Object;
+			_cacheSize : uint;
 
 		private static var _instance : AssetManager;
 
 		public var 
+			scale      : Boolean,
 			stage      : Stage,
+			quality    : String,
 			currMemory : uint;
 
 		public static const BLANK : BitmapData = new BitmapData(1, 1, true, 0);
@@ -29,10 +31,10 @@ package bmpcache
 		public function init(stg:Stage, cacheMemony:uint=512000):void
 		{
 			stage = stg;
+			quality = stage.quality;
 
 			_assets = {};
 			_animList = [];
-			_reference = {};
 			_cacheSize = cacheMemony << 10;
 		}
 
@@ -46,19 +48,8 @@ package bmpcache
 
 		public function addAnim(anim:Animation):void
 		{
-			if (!_reference[anim.id])
-			{
-				_reference[anim.id] = 0;
-			}
-
 			ttlReset(anim);
 			_animList.push(anim);
-		}
-
-		private function ttlReset(anim:Animation):void
-		{
-			if (anim.ttl == 0) _reference[anim.id]++;
-			if (anim.renderAble || anim.isCurrAnim) anim.ttl = 1; //+ Math.random() * 100;
 		}
 
 		public function addFrame(aid:String, frame:Frame):void
@@ -76,6 +67,7 @@ package bmpcache
 			for each (var anim:Animation in _animList)
 			{
 				if (anim.ttl > 0) ++anim.ttl;
+
 				ttlReset(anim);
 			}
 
@@ -87,22 +79,31 @@ package bmpcache
 			return currMemory < _cacheSize;
 		}
 
+		private function ttlReset(anim:Animation):void
+		{
+			if (anim.ttl == 0) ++anim.referenceCount;
+			if (anim.renderAble && anim.isCurrAnim) anim.ttl = 1; //+ Math.random() * 100;
+		}
+
 		private function release():void
 		{
+			var anim:Animation;
+			var frame:Frame;
+
 			_animList.sortOn('ttl', Array.DESCENDING | Array.NUMERIC);
-			var anim:Animation = _animList[0] as Animation;
 
+			anim = _animList[0] as Animation;
 			if (anim.ttl < 100) return;
-
 			anim.ttl = 0;
-			_reference[anim.id]--;
 
-			if (_reference[anim.id] > 0) return;
-
-			//for each(var frame:Frame in (_anims[anim.id] as Vector.<Frame>))
-			//{
-			//	if (frame) frame.release();
-			//}
+			if (--anim.referenceCount > 0) return;
+			
+			for (var i:uint = anim.beginFrame - 1; i < anim.endFrame; ++i)
+			{
+				frame = (_assets[anim.assetId] as Vector.<Frame>)[i];	
+				
+				if (frame && --frame.referenceCount == 0) frame.release();
+			}
 		}
 
 		public static function getClassName(classOrInst:*):String

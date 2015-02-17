@@ -1,9 +1,8 @@
 package bmpcache
 {
 	import flash.display.*;
-	import flash.events.*;
 
-	public class Asset extends EventDispatcher
+	public class Asset
 	{
 		private var
 			_bmp         : Bitmap,
