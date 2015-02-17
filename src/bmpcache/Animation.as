@@ -38,7 +38,7 @@ package bmpcache
 				capture();
 			}
 
-			if (beginFrame + frameCount == endFrame) finishLoop();
+			if (frameCount + 1 == frameNums) finishLoop();
 		}
 
 		override protected function bmpshow():void

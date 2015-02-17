@@ -124,7 +124,7 @@ package
 
 		private function test():void
 		{
-			for (var i:uint = 0; i < 42; ++i) 
+			for (var i:uint = 0; i < 1; ++i) 
 			{
 				showAsset();
 			}
@@ -161,7 +161,7 @@ package
 
 					var asset:Asset = new Asset(this, true);
 					asset.setSource(mc.cow, 'cow_black_anim');
-					asset.switchAnim(1, 100, false);
+					asset.switchAnim(51, 103, false);
 					//asset.gotoAndStop(100);
 
 					_test_sp.addChild(mc);

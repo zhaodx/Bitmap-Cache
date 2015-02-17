@@ -97,7 +97,6 @@ package bmpcache
 			{
 				stopAnim();
 				dispatchEvent(new Event(FINISH_EVENT));
-				trace('stop')
 			}
 		}
 
