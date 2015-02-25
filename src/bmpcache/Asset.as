@@ -4,61 +4,69 @@ package bmpcache
 
 	public class Asset
 	{
+		public var
+			bmp         : Bitmap,
+			play        : Boolean,
+			source      : DisplayObject,
+			assetId     : String,
+			totalFrames : uint;
+
 		private var
-			_bmp         : Bitmap,
 			_anims       : Object,
-			_source      : DisplayObject,
 			_sourId      : String,
 			_baseId      : String,
 			_isAnim      : Boolean,
-			_assetId     : String,
-			_currAnim    : Animation,
-			_totalFrames : uint;
+			_currAnim    : Animation;
 				
-		public function Asset(classOrInst:*)
+		public function Asset(classOrInst:*, isPlay:Boolean=false)
 		{
+			play = isPlay;
 			_anims = {};
 			_baseId = AssetManager.getClassName(classOrInst);
 
-			_bmp = new Bitmap(AssetManager.BLANK, 'auto', true);
+			bmp = new Bitmap(AssetManager.BLANK, 'auto', true);
 		}
 
-		public function switchAnim(bFrame:uint, eFrame:uint):void
+		public function switchAnim(sour:DisplayObject, sid:String='asset', bFrame:int=1, eFrame:int=1):void
 		{
-			if (_currAnim) _currAnim.isCurrAnim = false;
+			setSource(sour, sid);
 
 			var newId:String = getId(bFrame, eFrame);
+			if (_currAnim) _currAnim.isCurrAnim = false;
+
 			_currAnim = _anims[newId];
 
 			if (!_currAnim)
 			{
-				_anims[newId] = _currAnim = new Animation(_assetId, newId, _source, _bmp, bFrame, eFrame);
+				_anims[newId] = _currAnim = new Animation(newId, this, bFrame, eFrame);
 			}
 
 			_currAnim.isCurrAnim = true;
 		}
 
-		public function gotoFrame(frame:uint):void
+		public function gotoFrame(frame:int):void
 		{
-			if (_currAnim) _currAnim.gotoFrame(frame);
+			if (_currAnim) _currAnim.gotoFrame(frame % (totalFrames + 1));
 		}
 
-		public function setSource(sour:DisplayObject, sid:String='asset'):void
+		private function setSource(sour:DisplayObject, sid:String='asset'):void
 		{
-			if (_source) return;
-
 			_sourId = sid;
-			_source = sour;
-			_source.parent.addChildAt(_bmp, _source.parent.getChildIndex(_source));
-			_assetId = _baseId + '_' + _sourId;
-			_totalFrames = (_source is MovieClip) ? (_source as MovieClip).totalFrames : 1;
 
-			AssetManager.inst.addAsset(_assetId, _totalFrames);
+			source = sour;
+			bmp.visible = true;
+			source.visible = false;
+			source.parent.addChildAt(bmp, source.parent.getChildIndex(source));
+
+			assetId = _baseId + '_' + _sourId;
+			totalFrames = (source is MovieClip) ? (source as MovieClip).totalFrames : 1;
+
+			AssetManager.inst.addAsset(assetId, totalFrames);
 		}
 
-		private function getId(bFrame:uint=1, eFrame:uint=1):String
+		private function getId(bFrame:int=1, eFrame:int=1):String
 		{
-			return [_assetId, bFrame, eFrame].join('_');
+			return [assetId, bFrame, eFrame].join('_');
 		}
 	}
 }

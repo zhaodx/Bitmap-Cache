@@ -7,27 +7,22 @@ package bmpcache
 	{
 		public var 
 			ttl            : uint,
-			assetId        : String,
-			endFrame       : uint,
-			frameNums      : uint,
+			asset          : Asset,
+			endFrame       : int,
+			frameNums      : int,
 			currFrame      : Frame,
-			beginFrame     : uint,
+			beginFrame     : int,
 			renderAble     : Boolean,
 			isCurrAnim     : Boolean,
 			referenceCount : uint; 
 
 		protected var 
-			bmp        : Bitmap,
 			matrix     : Matrix,
-			source     : DisplayObject,
-			frameCount : uint;
+			frameCount : int;
 
-
-		public function Animation(aid:String, sid:String, sour:DisplayObject, sbmp:Bitmap, bFrame:uint=1, eFrame:uint=1)
+		public function Animation(sid:String, ast:Asset, bFrame:int=1, eFrame:int=1)
 		{
-			bmp = sbmp;
-			source = sour;
-			assetId = aid;
+			asset = ast;
 			beginFrame = bFrame;
 			endFrame = eFrame;
 
@@ -45,26 +40,24 @@ package bmpcache
 		{
 			for (var i:uint = beginFrame - 1; i < endFrame; ++i)	
 			{
-				var frame:Frame = AssetManager.inst.getFrame(assetId, i);	
+				var frame:Frame = AssetManager.inst.getFrame(asset.assetId, i);	
 
 				if (!frame)
 				{
 					frame = new Frame();
 					frame.index = i;
 
-					AssetManager.inst.addFrame(assetId, frame);
+					AssetManager.inst.addFrame(asset.assetId, frame);
 				}
 
 				++frame.referenceCount;
 			}
 		}
 
-		public function gotoFrame(frameIndex:uint):void
+		public function gotoFrame(frame:int):void
 		{
-			if (frameCount == frameIndex) return;
-
-			frameCount = frameIndex;
-			currFrame = AssetManager.inst.getFrame(assetId, frameCount - 1);
+			frameCount = (frame < 1) ? 1 : frame;
+			currFrame = AssetManager.inst.getFrame(asset.assetId, frameCount - 1);
 
 			if (currFrame.bitmapData)
 			{
@@ -77,43 +70,40 @@ package bmpcache
 
 		protected function bmpshow():void
 		{
-			if (source is MovieClip && MovieClip(source).currentFrame != 1) 
+			if (asset.source is MovieClip && MovieClip(asset.source).currentFrame != 1) 
 			{
-				MovieClip(source).gotoAndStop(1);
+				MovieClip(asset.source).gotoAndStop(1);
 			}
 
-			if (!bmp.visible) bmp.visible = true;
-			if (source.visible) source.visible = false;
+			asset.bmp.bitmapData = currFrame.bitmapData;
 
-			bmp.bitmapData = currFrame.bitmapData;
-
-			bmp.x = Math.ceil(source.x) + Math.ceil(currFrame.bounds.x - 2);
-			bmp.y = Math.ceil(source.y) + Math.ceil(currFrame.bounds.y - 2);
+			asset.bmp.x = Math.ceil(asset.source.x) + Math.ceil(currFrame.bounds.x - 2);
+			asset.bmp.y = Math.ceil(asset.source.y) + Math.ceil(currFrame.bounds.y - 2);
 		}
 
 		protected function capture():void
 		{
 			AssetManager.inst.stage.quality = StageQuality.BEST;
 
-			if (source is MovieClip) MovieClip(source).gotoAndStop(frameCount);
+			if (asset.source is MovieClip) MovieClip(asset.source).gotoAndStop(frameCount);
 
 			if (!AssetManager.inst.cacheAble)
 			{
-				if (bmp.visible) bmp.visible = false;
-				if (!source.visible) source.visible = true;
+				if (asset.bmp.visible) asset.bmp.visible = false;
+				if (!asset.source.visible) asset.source.visible = true;
 
 				return;
 			}
 
-			currFrame.bounds = source.getBounds(source);
+			currFrame.bounds = asset.source.getBounds(asset.source);
 			matrix.tx = -Math.ceil(currFrame.bounds.x - 2);
 			matrix.ty = -Math.ceil(currFrame.bounds.y - 2);
 
-			currFrame.bitmapData = new BitmapData(Math.ceil(currFrame.bounds.width + 4), Math.ceil(currFrame.bounds.height + 4), true, 0x55FF0000);
+			currFrame.bitmapData = new BitmapData(Math.ceil(currFrame.bounds.width + 4), Math.ceil(currFrame.bounds.height + 4), true, 0x22FF0000);
 			currFrame.memory = currFrame.bitmapData.width * currFrame.bitmapData.height * 4;
 			AssetManager.inst.currMemory += currFrame.memory;
 
-			currFrame.bitmapData.draw(source, matrix, null, null, null, true);
+			currFrame.bitmapData.draw(asset.source, matrix, null, null, null, true);
 			AssetManager.inst.stage.quality = AssetManager.inst.quality;
 
 			bmpshow();

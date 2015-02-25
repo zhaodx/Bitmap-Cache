@@ -14,7 +14,6 @@ package
 	public class Demo extends Sprite
 	{
 		private var 
-			_tick        : uint,
 			_test_sp     : Sprite,
 			_mouse_pos   : Point,
 			_assts       : Vector.<Asset>,
@@ -65,13 +64,6 @@ package
 		private function onUpdate(event:Event):void
 		{
 			AssetManager.inst.tick();			
-
-			for each(var asset:Asset in _assts)
-			{
-				asset.gotoFrame(1 + (_tick % (50 - 1 + 1)));
-			}
-
-			++_tick;
 		}
 
 		private function onMouseDown(event:MouseEvent):void
@@ -117,7 +109,7 @@ package
 
 			loader.dataFormat = URLLoaderDataFormat.BINARY;
 			loader.addEventListener(Event.COMPLETE, onLoaded);
-			loader.load(new URLRequest('cow_black.swf'));
+			loader.load(new URLRequest('candyMachine_2.swf'));
 		}
 
 		private function onLoaded(event:Event):void
@@ -172,11 +164,15 @@ package
 					}
 					++iX;
 
-					var asset:Asset = new Asset(this);
-					asset.setSource(mc.cow, 'cow_black_anim');
-					asset.switchAnim(1, 50);
+					var asset:Asset = new Asset(this, true);
+					asset.switchAnim(mc.bottom, 'bottom', 1, 17);
 
-					_assts.push(asset);
+					var asset2:Asset = new Asset(this, true);
+					asset2.switchAnim(mc.work2, 'work2', 1, 17);
+
+					var asset3:Asset = new Asset(this, true);
+					asset3.switchAnim(mc.end_work, 'end_work', 1, 44);
+
 					_test_sp.addChild(mc);
 				}
 			}

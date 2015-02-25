@@ -7,6 +7,7 @@ package bmpcache
 	public class AssetManager 
 	{
 		private var 
+			_tick      : uint,
 			_assets    : Object,
 			_animList  : Array,
 			_cacheSize : uint;
@@ -57,15 +58,19 @@ package bmpcache
 			(_assets[aid] as Vector.<Frame>)[frame.index] = frame; 
 		}
 
-		public function getFrame(aid:String, frameIndex:uint=0):Frame
+		public function getFrame(aid:String, frameIndex:int):Frame
 		{
+			if (!aid || frameIndex < 0) return null;
 			return (_assets[aid] as Vector.<Frame>)[frameIndex];
 		}
 
 		public function tick():void
 		{
+			++_tick;
+
 			for each (var anim:Animation in _animList)
 			{
+				if (anim.asset.play && anim.isCurrAnim) anim.asset.gotoFrame(_tick);
 				if (anim.ttl > 0) ++anim.ttl;
 
 				ttlReset(anim);
@@ -100,7 +105,7 @@ package bmpcache
 			
 			for (var i:uint = anim.beginFrame - 1; i < anim.endFrame; ++i)
 			{
-				frame = (_assets[anim.assetId] as Vector.<Frame>)[i];	
+				frame = (_assets[anim.asset.assetId] as Vector.<Frame>)[i];	
 				
 				if (frame && --frame.referenceCount == 0) frame.release();
 			}

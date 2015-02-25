@@ -6,7 +6,7 @@ package bmpcache
 	public class Frame
 	{
 		public var
-			index          : uint,
+			index          : int,
 			memory         : uint,
 			bounds         : Rectangle,
 			bitmapData     : BitmapData,
