@@ -55,13 +55,16 @@ package bmpcache
 
 		public function addFrame(aid:String, frame:Frame):void
 		{
-			(_assets[aid] as Vector.<Frame>)[frame.index] = frame; 
+			var frames:Vector.<Frame> = _assets[aid] as Vector.<Frame>;
+			if (!aid || frame.index < 0 || frame.index >= frames.length) return;
+			frames[frame.index] = frame; 
 		}
 
 		public function getFrame(aid:String, frameIndex:int):Frame
 		{
-			if (!aid || frameIndex < 0) return null;
-			return (_assets[aid] as Vector.<Frame>)[frameIndex];
+			var frames:Vector.<Frame> = _assets[aid] as Vector.<Frame>;
+			if (!aid || frameIndex < 0 || frameIndex >= frames.length) return null;
+			return frames[frameIndex];
 		}
 
 		public function tick():void
@@ -70,7 +73,7 @@ package bmpcache
 
 			for each (var anim:Animation in _animList)
 			{
-				if (anim.asset.play && anim.isCurrAnim) anim.asset.gotoFrame(_tick);
+				if (anim.asset.play) anim.asset.gotoFrame(_tick) 
 				if (anim.ttl > 0) ++anim.ttl;
 
 				ttlReset(anim);
@@ -87,7 +90,7 @@ package bmpcache
 		private function ttlReset(anim:Animation):void
 		{
 			if (anim.ttl == 0) ++anim.referenceCount;
-			if (anim.renderAble && anim.isCurrAnim) anim.ttl = 1; //+ Math.random() * 100;
+			if (anim.renderAble && anim.isCurrAnim) anim.ttl = 1;
 		}
 
 		private function release():void

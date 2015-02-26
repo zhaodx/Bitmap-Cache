@@ -50,7 +50,7 @@ package
 			stage.align = StageAlign.TOP_LEFT;
 			stage.quality = StageQuality.MEDIUM;
 
-			AssetManager.inst.init(stage, 1024000);
+			AssetManager.inst.init(stage, 102400);
 
 			stage.addEventListener(Event.ENTER_FRAME, onUpdate, false, 0, true);
 			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp, false, 0, true);
@@ -109,7 +109,7 @@ package
 
 			loader.dataFormat = URLLoaderDataFormat.BINARY;
 			loader.addEventListener(Event.COMPLETE, onLoaded);
-			loader.load(new URLRequest('candyMachine_2.swf'));
+			loader.load(new URLRequest('cow_black.swf'));
 		}
 
 		private function onLoaded(event:Event):void
@@ -129,7 +129,7 @@ package
 		{
 			_assts = new Vector.<Asset>();
 
-			for (var i:uint = 0; i < 1; ++i) 
+			for (var i:uint = 0; i < 100; ++i) 
 			{
 				showAsset();
 			}
@@ -165,13 +165,13 @@ package
 					++iX;
 
 					var asset:Asset = new Asset(this, true);
-					asset.switchAnim(mc.bottom, 'bottom', 1, 17);
+					asset.switchAnim(mc.cow, 'cow', 1, 160);
 
-					var asset2:Asset = new Asset(this, true);
-					asset2.switchAnim(mc.work2, 'work2', 1, 17);
+					//var asset2:Asset = new Asset(this, true);
+					//asset2.switchAnim(mc.work2, 'work2', 1, 17);
 
-					var asset3:Asset = new Asset(this, true);
-					asset3.switchAnim(mc.end_work, 'end_work', 1, 44);
+					//var asset3:Asset = new Asset(this, true);
+					//asset3.switchAnim(mc.end_work, 'end_work', 1, 44);
 
 					_test_sp.addChild(mc);
 				}
