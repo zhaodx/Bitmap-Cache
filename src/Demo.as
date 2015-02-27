@@ -50,7 +50,7 @@ package
 			stage.align = StageAlign.TOP_LEFT;
 			stage.quality = StageQuality.MEDIUM;
 
-			AssetManager.inst.init(stage, 102400);
+			AssetManager.inst.init(stage, 100 << 10);
 
 			stage.addEventListener(Event.ENTER_FRAME, onUpdate, false, 0, true);
 			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp, false, 0, true);

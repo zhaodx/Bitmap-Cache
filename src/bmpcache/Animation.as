@@ -17,7 +17,6 @@ package bmpcache
 			referenceCount : uint; 
 
 		protected var 
-			matrix     : Matrix,
 			frameCount : int;
 
 		public function Animation(sid:String, ast:Asset, bFrame:int=1, eFrame:int=1)
@@ -27,7 +26,6 @@ package bmpcache
 			endFrame = eFrame;
 
 			renderAble = true;
-			matrix = new Matrix();
 			frameNums = endFrame - beginFrame + 1;
 
 			AssetManager.inst.addAnim(this);
