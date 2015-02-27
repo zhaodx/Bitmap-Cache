@@ -67,7 +67,7 @@ package bmpcache
 			frameCount = (frame < 1) ? 1 : frame;
 			currFrame = AssetManager.inst.getFrame(asset.assetId, frameCount - 1);
 
-			if (currFrame && currFrame.bitmapData)
+			if (currFrame && currFrame.bitmapData && AssetManager.inst.flag)
 			{
 				asset.bmp.bitmapData = currFrame.bitmapData;
 

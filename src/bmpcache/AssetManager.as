@@ -1,6 +1,7 @@
 package bmpcache
 {
 	import flash.display.*;
+	import flash.events.*;
 	import flash.utils.*;
 	import flash.geom.*;
 
@@ -15,6 +16,7 @@ package bmpcache
 		private static var _instance : AssetManager;
 
 		public var 
+			flag       : Boolean,
 			scale      : Boolean,
 			stage      : Stage,
 			quality    : String,
@@ -37,6 +39,15 @@ package bmpcache
 			_assets = {};
 			_animList = [];
 			_cacheSize = cacheMemony << 10;
+			stage.addEventListener(KeyboardEvent.KEY_DOWN ,keyDown);
+		}
+
+		private function keyDown(e:KeyboardEvent):void
+		{
+			if (e.keyCode == 32)
+			{
+				flag = !flag;	
+			}
 		}
 
 		public function addAsset(key:String, totalFrames:uint):void
@@ -68,6 +79,8 @@ package bmpcache
 
 		public function tick():void
 		{
+			if (!flag) return;
+
 			++_tick;
 
 			for each (var anim:Animation in _animList)
