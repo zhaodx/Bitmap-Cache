@@ -49,7 +49,6 @@ package bmpcache
 
 		public function addAnim(anim:Animation):void
 		{
-			ttlReset(anim);
 			_animList.push(anim);
 		}
 
@@ -73,10 +72,15 @@ package bmpcache
 
 			for each (var anim:Animation in _animList)
 			{
-				if (anim.asset.play) anim.asset.gotoFrame(_tick) 
-				if (anim.ttl > 0) ++anim.ttl;
+				if (anim.renderAble && anim.isCurrAnim) 
+				{
+					if (anim.ttl == 0) ++anim.referenceCount;
 
-				ttlReset(anim);
+					anim.ttl = 1;
+				}
+
+				if (anim.ttl > 0) ++anim.ttl;
+				if (anim.asset.play) anim.asset.gotoFrame(_tick) 
 			}
 
 			if (!cacheAble) release();
@@ -85,12 +89,6 @@ package bmpcache
 		public function get cacheAble():Boolean
 		{
 			return currMemory < _cacheSize;
-		}
-
-		private function ttlReset(anim:Animation):void
-		{
-			if (anim.ttl == 0) ++anim.referenceCount;
-			if (anim.renderAble && anim.isCurrAnim) anim.ttl = 1;
 		}
 
 		private function release():void
