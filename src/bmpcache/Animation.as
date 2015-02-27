@@ -80,7 +80,11 @@ package bmpcache
 			{
 				if (asset.bmp.visible) asset.bmp.visible = false;
 				if (!asset.source.visible) asset.source.visible = true;
-				if (asset.source is MovieClip) MovieClip(asset.source).gotoAndStop(frameCount);
+
+				if (asset.source is MovieClip && MovieClip(asset.source).currFrame != frameCount) 
+				{
+					MovieClip(asset.source).gotoAndStop(frameCount);
+				}
 			}
 		}
 	}

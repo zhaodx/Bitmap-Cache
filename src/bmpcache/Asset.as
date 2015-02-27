@@ -72,9 +72,7 @@ package bmpcache
 			}else
 			{
 				var matrix:Matrix = new Matrix();
-
-				matrix.tx = -Math.ceil(frame.bounds.x - 1);
-				matrix.ty = -Math.ceil(frame.bounds.y - 1);
+				matrix.translate(-Math.ceil(frame.bounds.x - 1), -Math.ceil(frame.bounds.y - 1));
 
 				frame.bitmapData = new BitmapData(Math.ceil(frame.bounds.width + 2), Math.ceil(frame.bounds.height + 2), true, 0x22FF0000);
 				frame.bitmapData.draw(source, matrix, null, null, frame.bitmapData.rect, false);
