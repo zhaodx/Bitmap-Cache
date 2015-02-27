@@ -104,11 +104,14 @@ package bmpcache
 
 			if (--anim.referenceCount > 0) return;
 			
-			for (var i:uint = anim.beginFrame - 1; i < anim.endFrame; ++i)
+			var frames:Vector.<Frame> = _assets[anim.asset.assetId] as Vector.<Frame>;	
+
+			if (frames)
 			{
-				frame = (_assets[anim.asset.assetId] as Vector.<Frame>)[i];	
-				
-				if (frame && --frame.referenceCount == 0) frame.release();
+				for each(frame in frames)
+				{
+					if (frame && frame.bitmapData && --frame.referenceCount == 0) frame.release();
+				}
 			}
 		}
 
