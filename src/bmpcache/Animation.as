@@ -74,6 +74,8 @@ package bmpcache
 				asset.bmp.x = Math.ceil(asset.sourPoint.x) + Math.ceil(currFrame.bounds.x - 1);
 				asset.bmp.y = Math.ceil(asset.sourPoint.y) + Math.ceil(currFrame.bounds.y - 1);
 
+				asset.bmp.smoothing = true;
+
 				if (!asset.bmp.visible) asset.bmp.visible = true;
 				if (asset.source.visible) asset.source.visible = false;
 			}else
