@@ -34,8 +34,9 @@ package bmpcache
 		public function init(stg:Stage, cacheMemony:uint=512000):void
 		{
 			stage = stg;
+			flag = true;
 			quality = stage.quality;
-
+			
 			_assets = {};
 			_animList = [];
 			_cacheSize = cacheMemony << 10;
