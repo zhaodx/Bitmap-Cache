@@ -109,8 +109,8 @@ package
 
 			loader.dataFormat = URLLoaderDataFormat.BINARY;
 			loader.addEventListener(Event.COMPLETE, onLoaded);
-			loader.load(new URLRequest('cow_black.swf'));
-			//loader.load(new URLRequest('candyMachine_2.swf'));
+			//loader.load(new URLRequest('cow_black.swf'));
+			loader.load(new URLRequest('candyMachine_2.swf'));
 		}
 
 		private function onLoaded(event:Event):void
@@ -165,14 +165,14 @@ package
 					}
 					++iX;
 
-					var asset:Asset = new Asset(this, true);
-					asset.switchAnim(mc.cow, 'cow', 1, 160);
+					//var asset:Asset = new Asset(this, true);
+					//asset.switchAnim(mc.cow, 'cow', 1, 160);
 
-					//var asset2:Asset = new Asset(this, true);
-					//asset2.switchAnim(mc.work2, 'work2', 1, 17);
+					var asset2:Asset = new Asset(this, true);
+					asset2.switchAnim(mc.work2, 'work2', 1, 17);
 
-					//var asset3:Asset = new Asset(this, true);
-					//asset3.switchAnim(mc.end_work, 'end_work', 1, 44);
+					var asset3:Asset = new Asset(this, true);
+					asset3.switchAnim(mc.end_work, 'end_work', 1, 44);
 
 					_test_sp.addChild(mc);
 				}

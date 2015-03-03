@@ -1,7 +1,7 @@
 package bmpcache
 {
 	import flash.display.*;
-	import flash.geom.Rectangle;
+	import flash.geom.*;
 
 	public class Frame
 	{
@@ -9,6 +9,7 @@ package bmpcache
 			index          : int,
 			memory         : uint,
 			bounds         : Rectangle,
+			offset         : Point,
 			bitmapData     : BitmapData,
 			referenceCount : uint;
 

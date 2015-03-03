@@ -71,8 +71,8 @@ package bmpcache
 			{
 				asset.bmp.bitmapData = currFrame.bitmapData;
 
-				asset.bmp.x = Math.ceil(asset.sourPoint.x) + Math.ceil(currFrame.bounds.x - 1);
-				asset.bmp.y = Math.ceil(asset.sourPoint.y) + Math.ceil(currFrame.bounds.y - 1);
+				asset.bmp.x = currFrame.offset.x; //currFrame.bounds.x; //(currFrame.offset.x);
+				asset.bmp.y = currFrame.offset.y; //currFrame.bounds.y; //(currFrame.offset.y);
 
 				asset.bmp.smoothing = true;
 

@@ -64,7 +64,26 @@ package bmpcache
 		{
 			AssetManager.inst.stage.quality = StageQuality.BEST;
 			if (source is MovieClip) MovieClip(source).gotoAndStop(frame.index + 1);
-			frame.bounds = source.getBounds(source);
+
+			var bounds:Rectangle = source.getBounds(source);
+			frame.bounds = source.getBounds(_parent);
+			frame.bounds.width = Math.ceil(bounds.width * source.scaleX);
+			frame.bounds.height = Math.ceil(bounds.height * source.scaleY);
+
+			if (source.transform.matrix.a < 0)
+			{
+				frame.bounds.x += frame.bounds.width;
+				frame.offset = new Point(frame.bounds.x, frame.bounds.y);
+			}else
+			{
+				bounds.x = Math.floor(bounds.x);
+				bounds.y = Math.floor(bounds.y);
+
+				frame.bounds.x = Math.floor(frame.bounds.x);
+				frame.bounds.y = Math.floor(frame.bounds.y);
+
+				frame.offset = new Point(source.x + bounds.x, source.y + bounds.y);
+			}
 
 			if (source.width == 0 || source.height == 0)
 			{
@@ -72,9 +91,10 @@ package bmpcache
 			}else
 			{
 				var matrix:Matrix = new Matrix();
-				matrix.translate(-Math.ceil(frame.bounds.x - 1), -Math.ceil(frame.bounds.y - 1));
+				matrix.translate(-(bounds.x), -(bounds.y));
+				matrix.scale(source.scaleX, source.scaleY);
 
-				frame.bitmapData = new BitmapData(Math.ceil(frame.bounds.width + 2), Math.ceil(frame.bounds.height + 2), true, 0x22FF0000);
+				frame.bitmapData = new BitmapData(frame.bounds.width, frame.bounds.height, true, 0); //0x22FF0000);
 				frame.bitmapData.draw(source, matrix, null, null, frame.bitmapData.rect, false);
 			}
 
@@ -91,11 +111,21 @@ package bmpcache
 			if (sid != _sourId)
 			{
 				source = sour;
+				source.x = Math.round(source.x);
+				source.y = Math.round(source.y);
+
 				sourPoint = new Point(source.x, source.y);
 
 				_sourId = sid;
 				_parent = source.parent;
 				_parent.addChildAt(bmp, _parent.getChildIndex(source));
+
+				if (source.transform.matrix.a < 0)
+				{
+					var matrix:Matrix = bmp.transform.matrix;
+					matrix.a = -1;
+					bmp.transform.matrix = matrix;
+				}
 
 				assetId = [_baseId, _sourId].join('_');
 				totalFrames = (source is MovieClip) ? (source as MovieClip).totalFrames : 1;
