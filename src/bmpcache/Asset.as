@@ -66,9 +66,17 @@ package bmpcache
 			if (source is MovieClip) MovieClip(source).gotoAndStop(frame.index + 1);
 
 			var bounds:Rectangle = source.getBounds(source);
+			bounds.width = Math.ceil(bounds.width);
+			bounds.height = Math.ceil(bounds.height);
+
 			frame.bounds = source.getBounds(_parent);
 			frame.bounds.width = Math.ceil(bounds.width * source.scaleX);
 			frame.bounds.height = Math.ceil(bounds.height * source.scaleY);
+
+				bounds.x = Math.ceil(bounds.x);
+				bounds.y = Math.ceil(bounds.y);
+				frame.bounds.x = Math.ceil(frame.bounds.x);
+				frame.bounds.y = Math.ceil(frame.bounds.y);
 
 			if (source.transform.matrix.a < 0)
 			{
@@ -76,14 +84,11 @@ package bmpcache
 				frame.offset = new Point(frame.bounds.x, frame.bounds.y);
 			}else
 			{
-				bounds.x = Math.floor(bounds.x);
-				bounds.y = Math.floor(bounds.y);
-
-				frame.bounds.x = Math.floor(frame.bounds.x);
-				frame.bounds.y = Math.floor(frame.bounds.y);
-
-				frame.offset = new Point(source.x + bounds.x, source.y + bounds.y);
+				frame.offset = new Point(frame.bounds.x, frame.bounds.y);
+				//frame.offset = new Point(source.x + bounds.x, source.y + bounds.y);
 			}
+
+			trace(bounds, frame.bounds, bounds.x - frame.bounds.x);
 
 			if (source.width == 0 || source.height == 0)
 			{
@@ -111,8 +116,8 @@ package bmpcache
 			if (sid != _sourId)
 			{
 				source = sour;
-				source.x = Math.round(source.x);
-				source.y = Math.round(source.y);
+				source.x = Math.ceil(source.x);
+				source.y = Math.ceil(source.y);
 
 				sourPoint = new Point(source.x, source.y);
 
