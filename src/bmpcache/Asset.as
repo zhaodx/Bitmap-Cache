@@ -66,29 +66,9 @@ package bmpcache
 			if (source is MovieClip) MovieClip(source).gotoAndStop(frame.index + 1);
 
 			var bounds:Rectangle = source.getBounds(source);
-			bounds.width = Math.ceil(bounds.width);
-			bounds.height = Math.ceil(bounds.height);
-
 			frame.bounds = source.getBounds(_parent);
-			frame.bounds.width = Math.ceil(bounds.width * source.scaleX);
-			frame.bounds.height = Math.ceil(bounds.height * source.scaleY);
-
-				bounds.x = Math.ceil(bounds.x);
-				bounds.y = Math.ceil(bounds.y);
-				frame.bounds.x = Math.ceil(frame.bounds.x);
-				frame.bounds.y = Math.ceil(frame.bounds.y);
-
-			if (source.transform.matrix.a < 0)
-			{
-				frame.bounds.x += frame.bounds.width;
-				frame.offset = new Point(frame.bounds.x, frame.bounds.y);
-			}else
-			{
-				frame.offset = new Point(frame.bounds.x, frame.bounds.y);
-				//frame.offset = new Point(source.x + bounds.x, source.y + bounds.y);
-			}
-
-			trace(bounds, frame.bounds, bounds.x - frame.bounds.x);
+			frame.bounds.width = bounds.width * source.scaleX;
+			frame.bounds.height = bounds.height * source.scaleY;
 
 			if (source.width == 0 || source.height == 0)
 			{
@@ -99,9 +79,21 @@ package bmpcache
 				matrix.translate(-(bounds.x), -(bounds.y));
 				matrix.scale(source.scaleX, source.scaleY);
 
-				frame.bitmapData = new BitmapData(frame.bounds.width, frame.bounds.height, true, 0); //0x22FF0000);
-				frame.bitmapData.draw(source, matrix, null, null, frame.bitmapData.rect, false);
+				frame.bitmapData = new BitmapData(frame.bounds.width, frame.bounds.height, true, 0x22FF0000);
+				frame.bitmapData.draw(source, matrix, null, null, frame.bitmapData.rect, true);
 			}
+
+			if (source.transform.matrix.a < 0)
+			{
+				frame.bounds.x += frame.bounds.width;
+			}
+
+			if (source.transform.matrix.d < 0)
+			{
+				frame.bounds.y += frame.bounds.height;
+			}
+
+			frame.offset = new Point(frame.bounds.x, frame.bounds.y);
 
 			frame.memory = frame.bitmapData.width * frame.bitmapData.height * 4;
 			AssetManager.inst.currMemory += frame.memory;
@@ -116,21 +108,17 @@ package bmpcache
 			if (sid != _sourId)
 			{
 				source = sour;
-				source.x = Math.ceil(source.x);
-				source.y = Math.ceil(source.y);
-
 				sourPoint = new Point(source.x, source.y);
 
 				_sourId = sid;
 				_parent = source.parent;
 				_parent.addChildAt(bmp, _parent.getChildIndex(source));
 
-				if (source.transform.matrix.a < 0)
-				{
-					var matrix:Matrix = bmp.transform.matrix;
-					matrix.a = -1;
-					bmp.transform.matrix = matrix;
-				}
+				var matrix:Matrix = bmp.transform.matrix;
+				if (source.transform.matrix.a < 0) matrix.a = -1;
+				if (source.transform.matrix.d < 0) matrix.d = -1;
+
+				bmp.transform.matrix = matrix;
 
 				assetId = [_baseId, _sourId].join('_');
 				totalFrames = (source is MovieClip) ? (source as MovieClip).totalFrames : 1;

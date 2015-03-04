@@ -111,7 +111,8 @@ package
 			loader.addEventListener(Event.COMPLETE, onLoaded);
 			//loader.load(new URLRequest('cow_black.swf'));
 			//loader.load(new URLRequest('candyMachine_2.swf'));
-			loader.load(new URLRequest('Armadillo.swf'));
+			//loader.load(new URLRequest('Armadillo.swf'));
+			loader.load(new URLRequest('LabradorHome8X12_mena.swf'));
 		}
 
 		private function onLoaded(event:Event):void
@@ -166,20 +167,25 @@ package
 					}
 					++iX;
 
-					//var asset:Asset = new Asset(this, true);
-					//asset.switchAnim(mc.cow, 'cow', 1, 160);
+					var asset:Asset = new Asset(this, true);
+					asset.switchAnim(mc.cow, 'cow', 1, 320);
 
 					//var asset2:Asset = new Asset(this, true);
 					//asset2.switchAnim(mc.work2, 'work2', 1, 17);
-
 					//var asset3:Asset = new Asset(this, true);
 					//asset3.switchAnim(mc.end_work, 'end_work', 1, 44);
 
 					//var asset2:Asset = new Asset(this, true);
 					//asset2.switchAnim(mc.animal1, 'animal1', 1, 100);
+					//var asset3:Asset = new Asset(this, true);
+					//asset3.switchAnim(mc.animal3, 'animal3', 1, 100);
 
-					var asset3:Asset = new Asset(this, true);
-					asset3.switchAnim(mc.animal3, 'animal3', 1, 100);
+					//var asset1:Asset = new Asset(this, true);
+					//asset1.switchAnim(mc.animal3, 'animal3', 1, 180);
+					//var asset2:Asset = new Asset(this, true);
+					//asset2.switchAnim(mc.animal1, 'animal1', 1, 180);
+					//var asset3:Asset = new Asset(this, true);
+					//asset3.switchAnim(mc.animal2, 'animal2', 1, 180);
 
 					_test_sp.addChild(mc);
 				}
